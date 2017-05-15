@@ -30,6 +30,8 @@ public class Cat : MonoBehaviour
 
 	[Header("Movement")]
 	public float speed = 18;
+	public float aimingSpeed = 5f;
+	public float dashingAddedSpeed = 0.5f;
 
 	[Header("Dash")]
 	public bool kikiDashEnabled = true;
@@ -40,19 +42,23 @@ public class Cat : MonoBehaviour
 	public float dashEndDuration = 0.2f;
 
 	[Header("GD Dash")]
-	public float dashThreshold;
 	public float timeToMaxDuration;
 	public float dashMinDuration;
 	public float dashMaxDuration;
 
+	[Header("Dash Line Renderer")]
+	public LineRenderer dashLineRenderer;
+	public float lengthFactor = 1;
+
 	private Rigidbody _rigidbody;
 	private Vector3 _movement;
-	private float dashSpeedTemp;
+	private float _dashSpeedTemp;
 
 	void Start () 
 	{
 		_rigidbody = GetComponent<Rigidbody> ();
 		rewiredPlayer = ReInput.players.GetPlayer(controllerNumber);
+		dashLineRenderer.gameObject.SetActive (false);
 	}
 	
 	void Update () 
@@ -95,6 +101,9 @@ public class Cat : MonoBehaviour
 		//Movement
 		if (dashState != DashState.Dashing && dashState != DashState.DashEnd && dashState != DashState.DashAim)
 			_rigidbody.MovePosition(_rigidbody.position + _movement * speed * Time.fixedDeltaTime);
+
+		if (dashState == DashState.DashAim)
+			_rigidbody.MovePosition(_rigidbody.position + _movement * aimingSpeed * Time.fixedDeltaTime);
 	}
 
 	void LookForward ()
@@ -110,11 +119,11 @@ public class Cat : MonoBehaviour
 		Vector3 movementTemp = new Vector3(rewiredPlayer.GetAxisRaw("Move Horizontal"), 0f, rewiredPlayer.GetAxisRaw("Move Vertical"));
 		movementTemp = movementTemp.normalized;
 
-		dashSpeedTemp = dashSpeed;
+		_dashSpeedTemp = dashSpeed;
 
 		while (dashState != DashState.Cooldown)
 		{
-			_rigidbody.velocity = movementTemp * dashSpeedTemp;
+			_rigidbody.velocity = movementTemp * _dashSpeedTemp;
 
 			yield return new WaitForFixedUpdate();
 		}
@@ -124,7 +133,7 @@ public class Cat : MonoBehaviour
 	{
 		dashState = DashState.DashEnd;
 
-		DOTween.To (()=> dashSpeedTemp, x=> dashSpeedTemp = x, 0, dashEndDuration).SetEase (Ease.OutQuad);
+		DOTween.To (()=> _dashSpeedTemp, x=> _dashSpeedTemp = x, 0, dashEndDuration).SetEase (Ease.OutQuad);
 
 		yield return new WaitForSeconds (dashEndDuration);
 
@@ -141,68 +150,56 @@ public class Cat : MonoBehaviour
 
 		float holdTime = 0;
 
+		dashLineRenderer.gameObject.SetActive (true);
+
 		while(rewiredPlayer.GetButton ("Action 1"))
 		{
 			holdTime = rewiredPlayer.GetButtonTimePressed ("Action 1");
 
 			if (holdTime >= timeToMaxDuration)
 				break;
-			
+
+			dashLineRenderer.SetPosition (0, transform.position);
+			dashLineRenderer.SetPosition (1, transform.position + transform.forward * lengthFactor * (holdTime / timeToMaxDuration));
+
 			yield return new WaitForEndOfFrame ();
 		}
 
+		Debug.Log (transform.position);
+
+		dashLineRenderer.gameObject.SetActive (false);
+
 		Debug.Log (holdTime);
 
-		if(holdTime < dashThreshold)
+		_dashSpeedTemp = dashSpeed;
+		
+		dashState = DashState.Dashing;
+		
+		Vector3 movementTemp = transform.forward;
+
+		if (holdTime > timeToMaxDuration)
+			holdTime = timeToMaxDuration;
+
+		float duration = (holdTime / timeToMaxDuration) * dashMaxDuration;
+		
+//		if (duration < dashMinDuration)
+//			duration = dashMinDuration;
+//		
+		if (duration > dashMaxDuration)
+			duration = dashMaxDuration;
+
+		Debug.Log ("Duration : " + duration);
+		Debug.Log ("% : " + (holdTime / timeToMaxDuration));
+		
+		DOVirtual.DelayedCall (duration, ()=> StartCoroutine(DashEnd()));
+		
+		while (dashState != DashState.Cooldown)
 		{
-			Debug.Log ("Small Dash");
-
-			dashState = DashState.Dashing;
-
-			Vector3 movementTemp = transform.forward;
-
-			float dashSpeedTemp = dashSpeed;
-			float futureTime = Time.time + dashMinDuration;
-			float start = futureTime - Time.time;
-
-			//DOVirtual.DelayedCall (dashMinDuration, ()=> StartCoroutine(DashEnd()));
-
-			float duration = 0;
-
-			while (duration <= dashMinDuration)
-			{
-				duration += Time.fixedDeltaTime;
-				_rigidbody.velocity = movementTemp * dashSpeedTemp;
-				yield return new WaitForFixedUpdate();
-			}
-		}
-		else
-		{
-			Debug.Log ("Big Dash");
-
-			if (holdTime > timeToMaxDuration)
-				holdTime = timeToMaxDuration;
-
-			dashState = DashState.Dashing;
-
-			Vector3 movementTemp = transform.forward;
-
-			Debug.Log ("% : " + (holdTime / timeToMaxDuration));
-			Debug.Log ("Force : " + (holdTime / timeToMaxDuration) * dashMaxDuration + dashMinDuration);
-
-			float dashSpeedTemp = dashSpeed;
-			float futureTime = Time.time + (holdTime / timeToMaxDuration) * dashMaxDuration + dashMinDuration;
-			float start = futureTime - Time.time;
-
-			DOVirtual.DelayedCall ((holdTime / timeToMaxDuration) * dashMaxDuration + dashMinDuration, ()=> StartCoroutine(DashEnd()));
-
-			while (Time.time <= futureTime)
-			{
-				_rigidbody.velocity = movementTemp * dashSpeedTemp * Time.fixedDeltaTime;
-				yield return new WaitForFixedUpdate();
-			}
+			_rigidbody.velocity = movementTemp * _dashSpeedTemp;
+			_dashSpeedTemp *= dashingAddedSpeed;
+			yield return new WaitForFixedUpdate();
 		}
 
-		dashState = DashState.CanDash;
+		Debug.Log (transform.position);
 	}
 }
