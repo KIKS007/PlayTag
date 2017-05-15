@@ -50,6 +50,10 @@ public class Cat : MonoBehaviour
 	public LineRenderer dashLineRenderer;
 	public float lengthFactor = 1;
 
+	[Header("Wrap")]
+	public float xWidth;
+	public float yWidth;
+
 	private Rigidbody _rigidbody;
 	private Vector3 _movement;
 	private float _dashSpeedTemp;
@@ -70,6 +74,8 @@ public class Cat : MonoBehaviour
 		DashInput ();
 
 		LookForward ();
+
+		Wrap ();
 	}
 
 	void DashInput ()
@@ -165,8 +171,6 @@ public class Cat : MonoBehaviour
 			yield return new WaitForEndOfFrame ();
 		}
 
-		Debug.Log (transform.position);
-
 		dashLineRenderer.gameObject.SetActive (false);
 
 		Debug.Log (holdTime);
@@ -199,7 +203,18 @@ public class Cat : MonoBehaviour
 			_dashSpeedTemp *= dashingAddedSpeed;
 			yield return new WaitForFixedUpdate();
 		}
+	}
 
-		Debug.Log (transform.position);
+	void Wrap ()
+	{
+		if (transform.position.x < -xWidth)
+			transform.DOMoveX (xWidth, 0);
+		else if(transform.position.x > xWidth)
+			transform.DOMoveX (-xWidth, 0);
+
+		if (transform.position.z < -yWidth)
+			transform.DOMoveZ (yWidth, 0);
+		else if(transform.position.z > yWidth)
+			transform.DOMoveZ (-yWidth, 0);
 	}
 }
