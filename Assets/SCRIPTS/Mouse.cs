@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Rewired;
+using DG.Tweening;
 
 public enum MouseState
 {
@@ -32,6 +33,10 @@ public class Mouse : MonoBehaviour
 	public float pushForce = 150f;
 	public float pushCooldown = 1f;
 
+	[Header("Wrap")]
+	public float xWidth;
+	public float yWidth;
+
 	private Rigidbody _rigidbody;
     private List<Rigidbody> _pushableList = new List<Rigidbody>();
     private Button _button;
@@ -42,6 +47,12 @@ public class Mouse : MonoBehaviour
 	void Start () 
 	{
 		_rigidbody = GetComponent<Rigidbody> ();
+		rewiredPlayer = ReInput.players.GetPlayer(controllerNumber);
+	}
+
+	public void SetupRewired (int number)
+	{
+		controllerNumber = number;
 		rewiredPlayer = ReInput.players.GetPlayer(controllerNumber);
 	}
 	
@@ -118,6 +129,12 @@ public class Mouse : MonoBehaviour
         {
             _pushableList.Add(col.GetComponent<Rigidbody>());
         }
+
+		//Cat
+		if (col.tag == "Cat")
+		{
+			_pushableList.Add(col.GetComponent<Rigidbody>());
+		}
     }
 
     void OnTriggerExit (Collider col)
@@ -133,5 +150,24 @@ public class Mouse : MonoBehaviour
         {
             _pushableList.Remove(col.GetComponent<Rigidbody>());
         }
+
+		//Cat
+		if (col.tag == "Cat")
+		{
+			_pushableList.Remove(col.GetComponent<Rigidbody>());
+		}
     }
+
+	void Wrap ()
+	{
+		if (transform.position.x < -xWidth)
+			transform.DOMoveX (xWidth, 0);
+		else if(transform.position.x > xWidth)
+			transform.DOMoveX (-xWidth, 0);
+
+		if (transform.position.z < -yWidth)
+			transform.DOMoveZ (yWidth, 0);
+		else if(transform.position.z > yWidth)
+			transform.DOMoveZ (-yWidth, 0);
+	}
 }

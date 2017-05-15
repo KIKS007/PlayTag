@@ -64,7 +64,13 @@ public class Cat : MonoBehaviour
 		rewiredPlayer = ReInput.players.GetPlayer(controllerNumber);
 		dashLineRenderer.gameObject.SetActive (false);
 	}
-	
+
+	public void SetupRewired (int number)
+	{
+		controllerNumber = number;
+		rewiredPlayer = ReInput.players.GetPlayer(controllerNumber);
+	}
+
 	void Update () 
 	{
 		//Movement Vector
