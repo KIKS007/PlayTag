@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using Rewired;
 
-public class GameManager : Singleton<GameManager> 
+public class GameManager : MonoBehaviour
 {
 	[Header ("Players")]
 	public int playersCount = 0;
@@ -17,19 +19,65 @@ public class GameManager : Singleton<GameManager>
 	[Header ("Spawns")]
 	public List<Transform> spawns = new List<Transform> ();
 
+    [Header("Button")]
+    public List<Button> buttons;
+
+    [Header("Settings")]
+    public float timer;
+    public Text timerText;
+
 	public List<int> _controllerNumbers = new List<int> ();
 	private List<Transform> _spawnsTemp = new List<Transform> ();
+    public List<Mouse> _mouses = new List<Mouse>();
+    private float _timer;
+    
+    public static GameManager Instance;
 
-	// Use this for initialization
+    void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
 	void Start () 
 	{
+        Time.timeScale = 1f;
 		SpawnPlayers ();
+        _timer = timer;
+
+        foreach(GameObject go in mouses)
+        {
+            _mouses.Add(go.GetComponent<Mouse>());
+        }
 	}
-	
-	// Update is called once per frame
+
+
 	void Update () 
 	{
-		
+        //  -TIMER-
+        if(_timer <= 0f)
+        {
+            //  -CAT VICTORY-
+            Victory("Cat");
+            timerText.text = "0.00";
+        }
+        else
+        {
+            _timer -= Time.deltaTime;
+            timerText.text = _timer.ToString("F2");
+        }
+        //
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Restart();
+        }
 	}
 
 	void SpawnPlayers ()
@@ -98,4 +146,40 @@ public class GameManager : Singleton<GameManager>
 		mouses [mouses.Count - 1].GetComponent<Mouse> ().SetupRewired (controllerNumber);
 		mouses [mouses.Count - 1].GetComponent<Renderer> ().material.color = Random.ColorHSV ();
 	}
+
+    public void CheckButton()
+    {
+        foreach(Button b in buttons)
+        {
+            if (!b.active)
+                return;
+        }
+
+        //  -MOUSE VICTORY-
+        Victory("Mouse");
+    }
+
+    public void CheckMouse()
+    {
+        foreach(Mouse m in _mouses)
+        {
+            if(m.mouseState == MouseState.Normal)
+            {
+                return;
+            }
+        }
+
+        Victory("Cat");
+    }
+
+    void Victory(string winner)
+    {
+        Time.timeScale = 0f;
+        Debug.Log(winner + " victory");
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(0);
+    }
 }
