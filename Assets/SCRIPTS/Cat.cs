@@ -231,7 +231,7 @@ public class Cat : MonoBehaviour
 
 		DOVirtual.DelayedCall (duration, ()=> StartCoroutine(DashEnd()));
 
-		DOTween.To (()=> _dashSpeedTemp, x=> _dashSpeedTemp = x, 0, duration).SetEase (Ease.Linear);
+		//DOTween.To (()=> _dashSpeedTemp, x=> _dashSpeedTemp = x, 0, duration).SetEase (Ease.Linear);
 
 		Vector3 dashTargetTemp = dashTarget.position;
 		Vector3 movementTemp = dashTargetTemp - transform.position;
@@ -248,7 +248,9 @@ public class Cat : MonoBehaviour
 	{
 		dashState = DashState.DashEnd;
 
-		//DOTween.To (()=> _dashSpeedTemp, x=> _dashSpeedTemp = x, 0, dashEndDuration).SetEase (Ease.OutQuad);
+		//DOTween.To (()=> _dashSpeedTemp, x=> _dashSpeedTemp = x, 0, dashEndDuration).SetEase (Ease.Linear);
+
+		_dashSpeedTemp = 0;
 
 		yield return new WaitForSeconds (dashEndDuration);
 
