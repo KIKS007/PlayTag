@@ -25,8 +25,14 @@ public class Mouse : MonoBehaviour
 	public Player rewiredPlayer; // The Rewired Player
 
 	[Header("States")]
-	public PushState pushState= PushState.CanPush;
+	public PushState pushState = PushState.CanPush;
     public MouseState mouseState = MouseState.Normal;
+	public DashState dashState = DashState.CanDash;
+
+	[Header("Dash")]
+	public float dashSpeed = 80;
+	public float dashDuration;
+	public float dashCooldown = 1f;
 
 	[Header("Movement")]
 	public float speed = 16;
@@ -42,6 +48,7 @@ public class Mouse : MonoBehaviour
 	private Rigidbody _rigidbody;
     private List<Rigidbody> _pushableList = new List<Rigidbody>();
     private Button _button;
+	private float _dashSpeedTemp;
 
 	[HideInInspector]
 	public Vector3 _movement;
@@ -67,8 +74,12 @@ public class Mouse : MonoBehaviour
             _movement.Normalize();
 
             //Push
-            if (rewiredPlayer.GetButtonDown("Action 1") && pushState == PushState.CanPush)
+            if (rewiredPlayer.GetButtonDown("Action 2") && pushState == PushState.CanPush)
                 Push();
+
+			//Dash
+			if (rewiredPlayer.GetButtonDown("Action 1") && dashState == DashState.CanDash)
+				StartCoroutine(Dash());
 
             LookForward();
         }
@@ -121,6 +132,27 @@ public class Mouse : MonoBehaviour
 		pushState = PushState.CanPush;
 	}
 
+	protected virtual IEnumerator Dash()
+	{
+		dashState = DashState.Dashing;
+
+		_dashSpeedTemp = dashSpeed;
+
+		DOTween.To (()=> _dashSpeedTemp, x=> _dashSpeedTemp = x, 0, dashDuration).SetEase (Ease.OutQuad);
+
+		while (_dashSpeedTemp != 0)
+		{
+			_rigidbody.velocity = transform.forward * _dashSpeedTemp;
+
+			yield return new WaitForFixedUpdate();
+		}
+
+		dashState = DashState.Cooldown;
+
+		yield return new WaitForSeconds (dashCooldown);
+
+		dashState = DashState.CanDash;
+	}
 
     //PushTrigger
     void OnTriggerEnter (Collider col)

@@ -6,7 +6,8 @@ using DG.Tweening;
 
 public enum CatState
 {
-	Dead
+	Normal,
+	Stunned
 }
 
 public enum DashState
@@ -26,12 +27,16 @@ public class Cat : MonoBehaviour
 	public Player rewiredPlayer; // The Rewired Player
 
 	[Header("States")]
+	public CatState catstate = CatState.Normal;
 	public DashState dashState = DashState.CanDash;
 
 	[Header("Movement")]
 	public float speed = 18;
 	public float aimingSpeed = 5f;
 	public float dashingAddedSpeed = 0.5f;
+
+	[Header("Stun")]
+	public float stunDuration = 1;
 
 	[Header("Lookat")]
 	public float normalLerp;
@@ -79,7 +84,7 @@ public class Cat : MonoBehaviour
 		_movement.Normalize();
 
 		//Dash
-		if (rewiredPlayer.GetButtonDown("Action 1") && dashState == DashState.CanDash)
+		if (rewiredPlayer.GetButtonDown("Action 1") && dashState == DashState.CanDash && catstate != CatState.Stunned)
 			StartCoroutine(DashAim());
 		
 		LookForward ();
@@ -94,6 +99,9 @@ public class Cat : MonoBehaviour
 
 	void Movement ()
 	{
+		if (catstate == CatState.Stunned)
+			return;
+
 		//Movement
 		if (dashState != DashState.Dashing && dashState != DashState.DashEnd && dashState != DashState.DashAim)
 			_rigidbody.MovePosition(_rigidbody.position + _movement * speed * Time.fixedDeltaTime);
@@ -199,6 +207,20 @@ public class Cat : MonoBehaviour
 			_dashSpeedTemp *= dashingAddedSpeed;
 			yield return new WaitForFixedUpdate();
 		}
+	}
+
+	public virtual IEnumerator Stun ()
+	{
+		catstate = CatState.Stunned;
+
+		Color initialColor = GetComponent<Renderer> ().material.color;
+		GetComponent<Renderer> ().material.color = Color.black;
+
+		yield return new WaitForSeconds (stunDuration);
+
+		GetComponent<Renderer> ().material.color = initialColor;
+
+		catstate = CatState.Normal;
 	}
 
 	void Wrap ()
