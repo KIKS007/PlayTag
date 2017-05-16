@@ -47,6 +47,7 @@ public class Mouse : MonoBehaviour
 	public float xWidth;
 	public float yWidth;
 
+    private List<GameObject> _triggered = new List<GameObject>();
 	private Rigidbody _rigidbody;
     private MeshRenderer _rend;
     private Color _tempColor = new Color();
@@ -86,8 +87,6 @@ public class Mouse : MonoBehaviour
 
             LookForward();
         }
-
-        Wrap ();
 	}
 
 	void FixedUpdate ()
@@ -110,6 +109,7 @@ public class Mouse : MonoBehaviour
 	void Push ()
 	{
 		pushState = PushState.Pushing;
+        _triggered.Clear();
         pushAOE.SetActive(true);
 
 
@@ -155,6 +155,14 @@ public class Mouse : MonoBehaviour
     //PushTrigger
     void OnTriggerEnter (Collider col)
     {
+        foreach(GameObject go in _triggered)
+        {
+            if (col.gameObject == go)
+                return;
+        }
+
+        _triggered.Add(col.gameObject);
+
         //button
         if (col.tag == "Button")
         {
@@ -179,19 +187,6 @@ public class Mouse : MonoBehaviour
             col.GetComponent<Cat>().StartCoroutine("Stun");
         }
     }
-
-	void Wrap ()
-	{
-		if (transform.position.x < -xWidth)
-			transform.DOMoveX (xWidth, 0);
-		else if(transform.position.x > xWidth)
-			transform.DOMoveX (-xWidth, 0);
-
-		if (transform.position.z < -yWidth)
-			transform.DOMoveZ (yWidth, 0);
-		else if(transform.position.z > yWidth)
-			transform.DOMoveZ (-yWidth, 0);
-	}
 
     void OnCollisionEnter(Collision col)
     {

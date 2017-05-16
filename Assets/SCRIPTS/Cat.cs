@@ -179,7 +179,7 @@ public class Cat : MonoBehaviour
 
 	protected virtual IEnumerator DashAim ()
 	{
-		dashState = DashState.DashAim;
+        dashState = DashState.DashAim;
 
 		float holdTime = 0;
 
