@@ -6,6 +6,7 @@ public class Flag : Interrupter
 {
 
     public float timeToCaptureSolo = 5.0f;
+    public float multiplePlayerFactor = 0.3f;
 
     private int players = 0;
     private float _remainingTime;
@@ -19,7 +20,7 @@ public class Flag : Interrupter
 	void Update () {
 		if(players > 0 && !active)
         {
-            _remainingTime -= Time.deltaTime * players;
+            _remainingTime -= Time.deltaTime * (1 + (multiplePlayerFactor * players));
         }
 
         if(_remainingTime <= 0)
