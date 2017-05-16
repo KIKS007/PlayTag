@@ -42,11 +42,14 @@ public class Cat : MonoBehaviour
 	public float aimingLerp;
 
 	[Header("Dash")]
-	public Transform dashTarget;
 	public float dashSpeed = 80;
+	public float dashLengthFactor = 10;
 	public float timeToMaxDuration;
-	public float dashMinDuration;
-	public float dashMaxDuration;
+	public float timeReductionFactor = 0.7f;
+
+	[Header("Dash Target")]
+	public LayerMask wallMask = 1 << 10;
+	public Transform dashTarget;
 
 	[Header("Dash End")]
 	public float dashEndDuration = 0.2f;
@@ -54,11 +57,6 @@ public class Cat : MonoBehaviour
 
 	[Header("Dash Line Renderer")]
 	public LineRenderer dashLineRenderer;
-	public float lengthFactor = 1;
-
-	[Header("Wrap")]
-	public float xWidth;
-	public float yWidth;
 
 	private Rigidbody _rigidbody;
 	private Vector3 _movement;
@@ -88,8 +86,6 @@ public class Cat : MonoBehaviour
 			StartCoroutine(DashAim());
 		
 		LookForward ();
-
-		Wrap ();
 	}
 
 	void FixedUpdate ()
@@ -120,66 +116,12 @@ public class Cat : MonoBehaviour
 			transform.rotation = Quaternion.Lerp  (transform.rotation, rotation, lerp);
 		}
 	}
-
-	/*protected virtual IEnumerator DashAim ()
-	{
-		dashState = DashState.DashAim;
-
-		float holdTime = 0;
-
-		dashLineRenderer.gameObject.SetActive (true);
-
-		while(rewiredPlayer.GetButton ("Action 1"))
-		{
-			holdTime = rewiredPlayer.GetButtonTimePressed ("Action 1");
-
-			if (holdTime >= timeToMaxDuration)
-				break;
-
-			dashLineRenderer.SetPosition (0, transform.position);
-			dashLineRenderer.SetPosition (1, transform.position + transform.forward * lengthFactor * (holdTime / timeToMaxDuration));
-
-			yield return new WaitForEndOfFrame ();
-		}
-
-		dashLineRenderer.gameObject.SetActive (false);
-
-		//Debug.Log (holdTime);
-
-		_dashSpeedTemp = dashSpeed;
-
-		dashState = DashState.Dashing;
-
-		Vector3 movementTemp = transform.forward;
-
-		if (holdTime > timeToMaxDuration)
-			holdTime = timeToMaxDuration;
-
-		float duration = (holdTime / timeToMaxDuration) * dashMaxDuration;
-
-		//		if (duration < dashMinDuration)
-		//			duration = dashMinDuration;
-		//		
-
-		if (duration > dashMaxDuration)
-			duration = dashMaxDuration;
-
-		//Debug.Log ("Duration : " + duration);
-		//Debug.Log ("% : " + (holdTime / timeToMaxDuration));
-
-		DOVirtual.DelayedCall (duration, ()=> StartCoroutine(DashEnd()));
-
-		while (dashState != DashState.Cooldown)
-		{
-			_rigidbody.velocity = movementTemp * _dashSpeedTemp;
-			_dashSpeedTemp *= dashingAddedSpeed;
-			yield return new WaitForFixedUpdate();
-		}
-	}*/
-
+		
 	protected virtual IEnumerator DashAim ()
 	{
 		dashState = DashState.DashAim;
+
+		_rigidbody.velocity = Vector3.zero;
 
 		float holdTime = 0;
 
@@ -188,12 +130,22 @@ public class Cat : MonoBehaviour
 
 		while(rewiredPlayer.GetButton ("Action 1"))
 		{
+			if (catstate == CatState.Stunned)
+				yield break;
+
 			holdTime = rewiredPlayer.GetButtonTimePressed ("Action 1");
 
 			if (holdTime >= timeToMaxDuration)
 				break;
 
-			dashTarget.position = transform.position + transform.forward * lengthFactor * (holdTime / timeToMaxDuration);
+			Vector3 positionTemp = transform.position + transform.forward * dashLengthFactor * (holdTime / timeToMaxDuration);
+
+			RaycastHit hit;
+
+			if(Physics.Linecast (transform.position, positionTemp, out hit, wallMask))
+				dashTarget.position = hit.point;
+			else
+				dashTarget.position = positionTemp;
 
 			dashLineRenderer.SetPosition (0, transform.position);
 			dashLineRenderer.SetPosition (1, dashTarget.position);
@@ -206,55 +158,37 @@ public class Cat : MonoBehaviour
 
 		//Debug.Log (holdTime);
 
+		StartCoroutine (Dash ());
+	}
+
+	protected virtual IEnumerator Dash ()
+	{
 		_dashSpeedTemp = dashSpeed;
 
 		dashState = DashState.Dashing;
 
-
-		if (holdTime > timeToMaxDuration)
-			holdTime = timeToMaxDuration;
-
-		float duration = (holdTime / timeToMaxDuration) * dashMaxDuration;
-
-		//		if (duration < dashMinDuration)
-		//			duration = dashMinDuration;
-		//		
-
-		if (duration > dashMaxDuration)
-			duration = dashMaxDuration;
-
-		//Debug.Log ("Duration : " + duration);
-		//Debug.Log ("% : " + (holdTime / timeToMaxDuration));
-
 		float distance = Vector3.Distance (transform.position, dashTarget.position);
-		duration = distance / dashSpeed;
+		float duration = distance / dashSpeed;
 
-		DOVirtual.DelayedCall (duration, ()=> StartCoroutine(DashEnd()));
-
-		//DOTween.To (()=> _dashSpeedTemp, x=> _dashSpeedTemp = x, 0, duration).SetEase (Ease.Linear);
+		DOVirtual.DelayedCall (duration * timeReductionFactor, ()=> dashState = DashState.Cooldown);
 
 		Vector3 dashTargetTemp = dashTarget.position;
-		Vector3 movementTemp = dashTargetTemp - transform.position;
+		Vector3 movementTemp = (dashTargetTemp - transform.position).normalized;
 
 		while (dashState != DashState.Cooldown)
 		{
 			movementTemp = dashTargetTemp - transform.position;
-			_rigidbody.velocity = movementTemp * _dashSpeedTemp;
+
+			if(_rigidbody.velocity.magnitude < 1)
+				movementTemp.Normalize ();
+
+			//if (Vector3.Distance (transform.position, dashTargetTemp) > 0.5f)
+				
+				_rigidbody.velocity = movementTemp * _dashSpeedTemp;
 			yield return new WaitForFixedUpdate();
 		}
-	}
 
-	protected virtual IEnumerator DashEnd()
-	{
-		dashState = DashState.DashEnd;
-
-		//DOTween.To (()=> _dashSpeedTemp, x=> _dashSpeedTemp = x, 0, dashEndDuration).SetEase (Ease.Linear);
-
-		_dashSpeedTemp = 0;
-
-		yield return new WaitForSeconds (dashEndDuration);
-
-		dashState = DashState.Cooldown;
+		_rigidbody.velocity = Vector3.zero;
 
 		yield return new WaitForSeconds(dashCooldown);
 
@@ -273,18 +207,5 @@ public class Cat : MonoBehaviour
 		GetComponent<Renderer> ().material.color = initialColor;
 
 		catstate = CatState.Normal;
-	}
-
-	void Wrap ()
-	{
-		if (transform.position.x < -xWidth)
-			transform.DOMoveX (xWidth, 0);
-		else if(transform.position.x > xWidth)
-			transform.DOMoveX (-xWidth, 0);
-
-		if (transform.position.z < -yWidth)
-			transform.DOMoveZ (yWidth, 0);
-		else if(transform.position.z > yWidth)
-			transform.DOMoveZ (-yWidth, 0);
 	}
 }

@@ -43,10 +43,6 @@ public class Mouse : MonoBehaviour
 	public float pushCooldown = 1f;
     public GameObject pushAOE;
 
-	[Header("Wrap")]
-	public float xWidth;
-	public float yWidth;
-
 	private Rigidbody _rigidbody;
     private MeshRenderer _rend;
     private Color _tempColor = new Color();
@@ -86,8 +82,6 @@ public class Mouse : MonoBehaviour
 
             LookForward();
         }
-
-        Wrap ();
 	}
 
 	void FixedUpdate ()
@@ -179,19 +173,6 @@ public class Mouse : MonoBehaviour
             col.GetComponent<Cat>().StartCoroutine("Stun");
         }
     }
-
-	void Wrap ()
-	{
-		if (transform.position.x < -xWidth)
-			transform.DOMoveX (xWidth, 0);
-		else if(transform.position.x > xWidth)
-			transform.DOMoveX (-xWidth, 0);
-
-		if (transform.position.z < -yWidth)
-			transform.DOMoveZ (yWidth, 0);
-		else if(transform.position.z > yWidth)
-			transform.DOMoveZ (-yWidth, 0);
-	}
 
     void OnCollisionEnter(Collision col)
     {
