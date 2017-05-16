@@ -38,6 +38,7 @@ public class Mouse : MonoBehaviour
 	public float speed = 16;
 
 	[Header("Push")]
+	public float pushDuration = 0.5f;
 	public float pushForce = 150f;
 	public float pushCooldown = 1f;
     public GameObject pushAOE;
@@ -97,8 +98,7 @@ public class Mouse : MonoBehaviour
 	void Movement ()
 	{
 		//Movement
-		if (pushState != PushState.Pushing)
-			_rigidbody.MovePosition(_rigidbody.position + _movement * speed * Time.fixedDeltaTime);
+		_rigidbody.MovePosition(_rigidbody.position + _movement * speed * Time.fixedDeltaTime);
 	}
 
 	void LookForward ()
@@ -119,10 +119,13 @@ public class Mouse : MonoBehaviour
     //cooldown
 	protected virtual IEnumerator PushEnd ()
 	{
-        pushState = PushState.Cooldown;
+		yield return new WaitForSeconds(pushDuration);
+		
+		pushAOE.SetActive(false);
+
+		pushState = PushState.Cooldown;
 
 		yield return new WaitForSeconds(pushCooldown);
-        pushAOE.SetActive(false);
 
 		pushState = PushState.CanPush;
 	}
@@ -168,6 +171,9 @@ public class Mouse : MonoBehaviour
 		//Cat
 		if (col.tag == "Cat")
 		{
+			if (col.GetComponent<Cat> ().catstate == CatState.Stunned)
+				return;
+			
 			Rigidbody rb = col.GetComponent<Rigidbody>();
             rb.AddForce((rb.position - transform.position).normalized * pushForce, ForceMode.Impulse);
             col.GetComponent<Cat>().StartCoroutine("Stun");
@@ -191,7 +197,7 @@ public class Mouse : MonoBehaviour
     {
         if(col.gameObject.tag == "Cat")
         {
-            if (mouseState == MouseState.Normal)
+			if (mouseState == MouseState.Normal && col.gameObject.GetComponent<Cat> ().catstate != CatState.Stunned)
             {
                 mouseState = MouseState.Frozen;
                 _movement = Vector3.zero;
