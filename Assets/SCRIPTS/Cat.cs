@@ -33,18 +33,19 @@ public class Cat : MonoBehaviour
 	public float aimingSpeed = 5f;
 	public float dashingAddedSpeed = 0.5f;
 
+	[Header("Lookat")]
+	public float normalLerp;
+	public float aimingLerp;
+
 	[Header("Dash")]
-	public bool kikiDashEnabled = true;
 	public float dashSpeed = 80;
-	public float dashCooldown = 1f;
-
-	[Header("Kiki Dash")]
-	public float dashEndDuration = 0.2f;
-
-	[Header("GD Dash")]
 	public float timeToMaxDuration;
 	public float dashMinDuration;
 	public float dashMaxDuration;
+
+	[Header("Dash End")]
+	public float dashEndDuration = 0.2f;
+	public float dashCooldown = 1f;
 
 	[Header("Dash Line Renderer")]
 	public LineRenderer dashLineRenderer;
@@ -77,30 +78,13 @@ public class Cat : MonoBehaviour
 		_movement = new Vector3(rewiredPlayer.GetAxisRaw("Move Horizontal"), 0f, rewiredPlayer.GetAxisRaw("Move Vertical"));
 		_movement.Normalize();
 
-		DashInput ();
-
+		//Dash
+		if (rewiredPlayer.GetButtonDown("Action 1") && dashState == DashState.CanDash)
+			StartCoroutine(DashAim());
+		
 		LookForward ();
 
 		Wrap ();
-	}
-
-	void DashInput ()
-	{
-		if(kikiDashEnabled)
-		{
-			//Dash
-			if (rewiredPlayer.GetButtonDown("Action 1") && dashState == DashState.CanDash && _movement != Vector3.zero)
-				StartCoroutine(Dash());
-			
-			if (rewiredPlayer.GetButtonUp("Action 1") && dashState == DashState.Dashing)
-				StartCoroutine(DashEnd());
-		}
-		else
-		{
-			//Dash
-			if (rewiredPlayer.GetButtonDown("Action 1") && dashState == DashState.CanDash)
-				StartCoroutine(DashAim());
-		}
 	}
 
 	void FixedUpdate ()
@@ -120,8 +104,13 @@ public class Cat : MonoBehaviour
 
 	void LookForward ()
 	{
-		if (dashState != DashState.Dashing && dashState != DashState.DashEnd)
-			transform.LookAt (transform.position + _movement);
+		if (dashState != DashState.Dashing && dashState != DashState.DashEnd && _movement != Vector3.zero)
+		{
+			Quaternion rotation = Quaternion.LookRotation ( _movement, Vector3.up);
+			float lerp = dashState == DashState.DashAim ? aimingLerp : normalLerp;
+
+			transform.rotation = Quaternion.Lerp  (transform.rotation, rotation, lerp);
+		}
 	}
 
 	protected virtual IEnumerator Dash()
@@ -179,7 +168,7 @@ public class Cat : MonoBehaviour
 
 		dashLineRenderer.gameObject.SetActive (false);
 
-		Debug.Log (holdTime);
+		//Debug.Log (holdTime);
 
 		_dashSpeedTemp = dashSpeed;
 		
@@ -195,11 +184,12 @@ public class Cat : MonoBehaviour
 //		if (duration < dashMinDuration)
 //			duration = dashMinDuration;
 //		
+
 		if (duration > dashMaxDuration)
 			duration = dashMaxDuration;
 
-		Debug.Log ("Duration : " + duration);
-		Debug.Log ("% : " + (holdTime / timeToMaxDuration));
+		//Debug.Log ("Duration : " + duration);
+		//Debug.Log ("% : " + (holdTime / timeToMaxDuration));
 		
 		DOVirtual.DelayedCall (duration, ()=> StartCoroutine(DashEnd()));
 		
