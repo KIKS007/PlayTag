@@ -6,7 +6,8 @@ using DG.Tweening;
 
 public enum MouseState
 {
-	Dead
+    Normal,
+	Frozen
 }
 
 public enum PushState
@@ -25,6 +26,7 @@ public class Mouse : MonoBehaviour
 
 	[Header("States")]
 	public PushState pushState= PushState.CanPush;
+    public MouseState mouseState = MouseState.Normal;
 
 	[Header("Movement")]
 	public float speed = 16;
@@ -58,15 +60,20 @@ public class Mouse : MonoBehaviour
 	
 	void Update () 
 	{
-		//Movement Vector
-		_movement = new Vector3(rewiredPlayer.GetAxisRaw("Move Horizontal"), 0f, rewiredPlayer.GetAxisRaw("Move Vertical"));
-		_movement.Normalize();
+        if (mouseState == MouseState.Normal)
+        {
+            //Movement Vector
+            _movement = new Vector3(rewiredPlayer.GetAxisRaw("Move Horizontal"), 0f, rewiredPlayer.GetAxisRaw("Move Vertical"));
+            _movement.Normalize();
 
-        //Push
-        if (rewiredPlayer.GetButtonDown("Action 1") && pushState == PushState.CanPush)
-            Push();
+            //Push
+            if (rewiredPlayer.GetButtonDown("Action 1") && pushState == PushState.CanPush)
+                Push();
 
-		LookForward ();
+            LookForward();
+        }
+
+        Wrap ();
 	}
 
 	void FixedUpdate ()
@@ -170,4 +177,25 @@ public class Mouse : MonoBehaviour
 		else if(transform.position.z > yWidth)
 			transform.DOMoveZ (-yWidth, 0);
 	}
+
+    void OnCollisionEnter(Collision col)
+    {
+        if(col.gameObject.tag == "Cat")
+        {
+            if (mouseState == MouseState.Normal)
+            {
+                mouseState = MouseState.Frozen;
+                _movement = Vector3.zero;
+                GameManager.Instance.CheckMouse();
+            }
+        }
+
+        if (col.gameObject.tag == "Mouse")
+        {
+            if (mouseState == MouseState.Frozen)
+            {
+                mouseState = MouseState.Normal;
+            }
+        }
+    }
 }

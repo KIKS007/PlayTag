@@ -16,5 +16,6 @@ public class Button : MonoBehaviour {
     {
         active = true;
         _rend.material.color = Color.red;
+        GameManager.Instance.CheckButton();
     }
 }
