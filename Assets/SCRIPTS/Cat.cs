@@ -33,7 +33,6 @@ public class Cat : MonoBehaviour
 	[Header("Movement")]
 	public float speed = 18;
 	public float aimingSpeed = 5f;
-	public float dashingAddedSpeed = 0.5f;
 
 	[Header("Stun")]
 	public float stunDuration = 1;
@@ -43,6 +42,7 @@ public class Cat : MonoBehaviour
 	public float aimingLerp;
 
 	[Header("Dash")]
+	public Transform dashTarget;
 	public float dashSpeed = 80;
 	public float timeToMaxDuration;
 	public float dashMinDuration;
@@ -121,39 +121,7 @@ public class Cat : MonoBehaviour
 		}
 	}
 
-	protected virtual IEnumerator Dash()
-	{
-		dashState = DashState.Dashing;
-
-		Vector3 movementTemp = new Vector3(rewiredPlayer.GetAxisRaw("Move Horizontal"), 0f, rewiredPlayer.GetAxisRaw("Move Vertical"));
-		movementTemp = movementTemp.normalized;
-
-		_dashSpeedTemp = dashSpeed;
-
-		while (dashState != DashState.Cooldown)
-		{
-			_rigidbody.velocity = movementTemp * _dashSpeedTemp;
-
-			yield return new WaitForFixedUpdate();
-		}
-	}
-
-	protected virtual IEnumerator DashEnd()
-	{
-		dashState = DashState.DashEnd;
-
-		DOTween.To (()=> _dashSpeedTemp, x=> _dashSpeedTemp = x, 0, dashEndDuration).SetEase (Ease.OutQuad);
-
-		yield return new WaitForSeconds (dashEndDuration);
-
-		dashState = DashState.Cooldown;
-
-		yield return new WaitForSeconds(dashCooldown);
-
-		dashState = DashState.CanDash;
-	}
-
-	protected virtual IEnumerator DashAim ()
+	/*protected virtual IEnumerator DashAim ()
 	{
 		dashState = DashState.DashAim;
 
@@ -179,34 +147,114 @@ public class Cat : MonoBehaviour
 		//Debug.Log (holdTime);
 
 		_dashSpeedTemp = dashSpeed;
-		
+
 		dashState = DashState.Dashing;
-		
+
 		Vector3 movementTemp = transform.forward;
 
 		if (holdTime > timeToMaxDuration)
 			holdTime = timeToMaxDuration;
 
 		float duration = (holdTime / timeToMaxDuration) * dashMaxDuration;
-		
-//		if (duration < dashMinDuration)
-//			duration = dashMinDuration;
-//		
+
+		//		if (duration < dashMinDuration)
+		//			duration = dashMinDuration;
+		//		
 
 		if (duration > dashMaxDuration)
 			duration = dashMaxDuration;
 
 		//Debug.Log ("Duration : " + duration);
 		//Debug.Log ("% : " + (holdTime / timeToMaxDuration));
-		
+
 		DOVirtual.DelayedCall (duration, ()=> StartCoroutine(DashEnd()));
-		
+
 		while (dashState != DashState.Cooldown)
 		{
 			_rigidbody.velocity = movementTemp * _dashSpeedTemp;
 			_dashSpeedTemp *= dashingAddedSpeed;
 			yield return new WaitForFixedUpdate();
 		}
+	}*/
+
+	protected virtual IEnumerator DashAim ()
+	{
+		dashState = DashState.DashAim;
+
+		float holdTime = 0;
+
+		dashLineRenderer.gameObject.SetActive (true);
+		dashTarget.gameObject.SetActive (true);
+
+		while(rewiredPlayer.GetButton ("Action 1"))
+		{
+			holdTime = rewiredPlayer.GetButtonTimePressed ("Action 1");
+
+			if (holdTime >= timeToMaxDuration)
+				break;
+
+			dashTarget.position = transform.position + transform.forward * lengthFactor * (holdTime / timeToMaxDuration);
+
+			dashLineRenderer.SetPosition (0, transform.position);
+			dashLineRenderer.SetPosition (1, dashTarget.position);
+
+			yield return new WaitForEndOfFrame ();
+		}
+
+		dashLineRenderer.gameObject.SetActive (false);
+		dashTarget.gameObject.SetActive (false);
+
+		//Debug.Log (holdTime);
+
+		_dashSpeedTemp = dashSpeed;
+
+		dashState = DashState.Dashing;
+
+
+		if (holdTime > timeToMaxDuration)
+			holdTime = timeToMaxDuration;
+
+		float duration = (holdTime / timeToMaxDuration) * dashMaxDuration;
+
+		//		if (duration < dashMinDuration)
+		//			duration = dashMinDuration;
+		//		
+
+		if (duration > dashMaxDuration)
+			duration = dashMaxDuration;
+
+		//Debug.Log ("Duration : " + duration);
+		//Debug.Log ("% : " + (holdTime / timeToMaxDuration));
+
+		float distance = Vector3.Distance (transform.position, dashTarget.position);
+		duration = distance / dashSpeed;
+
+		DOVirtual.DelayedCall (duration, ()=> StartCoroutine(DashEnd()));
+
+		Vector3 dashTargetTemp = dashTarget.position;
+		Vector3 movementTemp = dashTargetTemp - transform.position;
+
+		while (dashState != DashState.Cooldown)
+		{
+			movementTemp = dashTargetTemp - transform.position;
+			_rigidbody.velocity = movementTemp * _dashSpeedTemp;
+			yield return new WaitForFixedUpdate();
+		}
+	}
+
+	protected virtual IEnumerator DashEnd()
+	{
+		dashState = DashState.DashEnd;
+
+		DOTween.To (()=> _dashSpeedTemp, x=> _dashSpeedTemp = x, 0, dashEndDuration).SetEase (Ease.OutQuad);
+
+		yield return new WaitForSeconds (dashEndDuration);
+
+		dashState = DashState.Cooldown;
+
+		yield return new WaitForSeconds(dashCooldown);
+
+		dashState = DashState.CanDash;
 	}
 
 	public virtual IEnumerator Stun ()
