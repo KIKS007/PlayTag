@@ -2,22 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Flag : MonoBehaviour {
+public class Flag : Interrupter
+{
 
     public float timeToCaptureSolo = 5.0f;
 
     private int players = 0;
     private float _remainingTime;
 
-	void Start () {
+	protected override void Start () {
         _remainingTime = timeToCaptureSolo;
+        _rend = GetComponent<Renderer>();
 	}
 	
 
 	void Update () {
-		if(players < 0)
+		if(players > 0 && !active)
         {
             _remainingTime -= Time.deltaTime * players;
+        }
+
+        if(_remainingTime <= 0)
+        {
+            active = true;
+            _rend.material.color = Color.red;
         }
 	}
 
@@ -36,5 +44,10 @@ public class Flag : MonoBehaviour {
         {
             players--;
         }
+    }
+
+    public override void Activate()
+    {
+        
     }
 }

@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
 	public List<Transform> spawns = new List<Transform> ();
 
     [Header("Button")]
-    public List<Button> buttons;
+    public List<Interrupter> buttons;
 
     [Header("Settings")]
     public float timer;
@@ -149,7 +149,7 @@ public class GameManager : MonoBehaviour
 
     public void CheckButton()
     {
-        foreach(Button b in buttons)
+        foreach(Interrupter b in buttons)
         {
             if (!b.active)
                 return;

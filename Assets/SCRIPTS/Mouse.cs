@@ -34,14 +34,15 @@ public class Mouse : MonoBehaviour
 	[Header("Push")]
 	public float pushForce = 150f;
 	public float pushCooldown = 1f;
+    public GameObject pushAOE;
 
 	[Header("Wrap")]
 	public float xWidth;
 	public float yWidth;
 
 	private Rigidbody _rigidbody;
-    private List<Rigidbody> _pushableList = new List<Rigidbody>();
-    private Button _button;
+    private MeshRenderer _rend;
+    private Color _tempColor = new Color();
 
 	[HideInInspector]
 	public Vector3 _movement;
@@ -49,6 +50,7 @@ public class Mouse : MonoBehaviour
 	void Start () 
 	{
 		_rigidbody = GetComponent<Rigidbody> ();
+        _rend = GetComponent<MeshRenderer>();
 		rewiredPlayer = ReInput.players.GetPlayer(controllerNumber);
 	}
 
@@ -97,16 +99,8 @@ public class Mouse : MonoBehaviour
 	void Push ()
 	{
 		pushState = PushState.Pushing;
+        pushAOE.SetActive(true);
 
-        //button
-        if (_button != null)
-            _button.Activate();
-
-        //movable
-        foreach(Rigidbody rb in _pushableList)
-        {
-            rb.AddForce((rb.position - transform.position).normalized * pushForce, ForceMode.Impulse);
-        }
 
 		StartCoroutine(PushEnd());
 	}
@@ -117,6 +111,7 @@ public class Mouse : MonoBehaviour
         pushState = PushState.Cooldown;
 
 		yield return new WaitForSeconds(pushCooldown);
+        pushAOE.SetActive(false);
 
 		pushState = PushState.CanPush;
 	}
@@ -128,41 +123,23 @@ public class Mouse : MonoBehaviour
         //button
         if (col.tag == "Button")
         {
-            _button = col.GetComponent<Button>();
+            col.GetComponent<Interrupter>().Activate(); 
         }
 
         //movable
         if (col.gameObject.layer == 8)
         {
-            _pushableList.Add(col.GetComponent<Rigidbody>());
+            Rigidbody rb = col.GetComponent<Rigidbody>();
+            rb.AddForce((rb.position - transform.position).normalized * pushForce, ForceMode.Impulse);
         }
 
 		//Cat
 		if (col.tag == "Cat")
 		{
-			_pushableList.Add(col.GetComponent<Rigidbody>());
-		}
-    }
-
-    void OnTriggerExit (Collider col)
-    {
-        //button
-        if(col.tag == "Button")
-        {
-            _button = null;
+			Rigidbody rb = col.GetComponent<Rigidbody>();
+            rb.AddForce((rb.position - transform.position).normalized * pushForce, ForceMode.Impulse);
+            col.GetComponent<Cat>().StartCoroutine("Stun");
         }
-
-        //movable
-        if (col.gameObject.layer == 8)
-        {
-            _pushableList.Remove(col.GetComponent<Rigidbody>());
-        }
-
-		//Cat
-		if (col.tag == "Cat")
-		{
-			_pushableList.Remove(col.GetComponent<Rigidbody>());
-		}
     }
 
 	void Wrap ()
@@ -186,6 +163,11 @@ public class Mouse : MonoBehaviour
             {
                 mouseState = MouseState.Frozen;
                 _movement = Vector3.zero;
+
+                //frozen color change
+                _tempColor = _rend.material.color;
+                _rend.material.color = Color.blue;
+
                 GameManager.Instance.CheckMouse();
             }
         }
@@ -194,6 +176,8 @@ public class Mouse : MonoBehaviour
         {
             if (mouseState == MouseState.Frozen)
             {
+                _rend.material.color = _tempColor;
+
                 mouseState = MouseState.Normal;
             }
         }
