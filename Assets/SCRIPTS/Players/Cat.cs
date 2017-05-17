@@ -33,6 +33,7 @@ public class Cat : MonoBehaviour
 	[Header("Movement")]
 	public float speed = 18;
 	public float aimingSpeed = 5f;
+	public float gravity = 10;
 
 	[Header("Stun")]
 	public float stunDuration = 1;
@@ -92,6 +93,13 @@ public class Cat : MonoBehaviour
 	void FixedUpdate ()
 	{
 		Movement ();
+
+		Gravity ();
+	}
+
+	void Gravity ()
+	{
+		_rigidbody.AddForce (Vector3.down * gravity, ForceMode.Acceleration);
 	}
 
 	void Movement ()
@@ -218,6 +226,7 @@ public class Cat : MonoBehaviour
 
 		GetComponent<Renderer> ().material.color = initialColor;
 
+		dashState = DashState.CanDash;
 		catstate = CatState.Normal;
 	}
 }

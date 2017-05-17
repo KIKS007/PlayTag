@@ -36,6 +36,7 @@ public class Mouse : MonoBehaviour
 
 	[Header("Movement")]
 	public float speed = 16;
+	public float gravity = 10;
 
 	[Header("Push")]
 	public float pushDuration = 0.5f;
@@ -94,6 +95,13 @@ public class Mouse : MonoBehaviour
 	void FixedUpdate ()
 	{
 		Movement ();
+
+		Gravity ();
+	}
+
+	void Gravity ()
+	{
+		_rigidbody.AddForce (Vector3.down * gravity, ForceMode.Acceleration);
 	}
 
 	void Movement ()
@@ -213,6 +221,7 @@ public class Mouse : MonoBehaviour
             {
                 mouseState = MouseState.Frozen;
                 _movement = Vector3.zero;
+
                 if (OnFrozen != null)
                     OnFrozen();
 
