@@ -5,12 +5,24 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Rewired;
 
+public enum GameState
+{
+    Playing,
+    Menu,
+    Victory,
+    Pause
+}
+
 public class GameManager : MonoBehaviour
 {
 	[Header ("Players")]
 	public int playersCount = 0;
 	public GameObject cat;
 	public List<GameObject> mouses = new List<GameObject> ();
+
+    [Header("Scores")]
+    public int catWinScore;
+    public int mousesWinScore;
 
 	[Header ("Prefabs")]
 	public GameObject catPrefab;
@@ -29,9 +41,11 @@ public class GameManager : MonoBehaviour
 	public List<int> _controllerNumbers = new List<int> ();
 	private List<Transform> _spawnsTemp = new List<Transform> ();
     public List<Mouse> _mouses = new List<Mouse>();
+    private List<int> _scoreList = new List<int>();
     private float _timer;
     
     public static GameManager Instance;
+
 
     void Awake()
     {
@@ -55,8 +69,12 @@ public class GameManager : MonoBehaviour
         {
             _mouses.Add(go.GetComponent<Mouse>());
         }
-	}
 
+        for(int i = 0; i < playersCount; i++)
+        {
+            _scoreList.Add(0);
+        }
+    }
 
 	void Update () 
 	{
@@ -64,7 +82,7 @@ public class GameManager : MonoBehaviour
         if(_timer <= 0f)
         {
             //  -CAT VICTORY-
-            Victory("Cat");
+            Victory(false);
             timerText.text = "0.00";
         }
         else
@@ -156,7 +174,7 @@ public class GameManager : MonoBehaviour
         }
 
         //  -MOUSE VICTORY-
-        Victory("Mouse");
+        Victory(true);
     }
 
     public void CheckMouse()
@@ -169,13 +187,30 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        Victory("Cat");
+        Victory(false);
     }
 
-    void Victory(string winner)
+    void Victory(bool mouse)
     {
         Time.timeScale = 0f;
-        Debug.Log(winner + " victory");
+
+        /*
+        if (mouse)
+        {
+            foreach (GameObject go in mouses)
+            {
+                _scoreList[go.GetComponent<Mouse>().controllerNumber] += mousesWinScore;
+            }
+        }
+        else
+        {
+            _scoreList[cat.GetComponent<Cat>().controllerNumber] += catWinScore;
+        }
+        for(int i = 0; i < _scoreList.Count; i++)
+        {
+            Debug.Log("j" + (i + 1) + " : " + _scoreList[i]);
+        }
+        */
     }
 
     public void Restart()

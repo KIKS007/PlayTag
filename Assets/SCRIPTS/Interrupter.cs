@@ -19,6 +19,8 @@ public class Interrupter : MonoBehaviour {
     virtual public void Activate()
     {
         _life--;
+        _rend.material.color = new Color((1f - ((float)_life / (float)life)/2f) , _rend.material.color.g, _rend.material.color.b);
+
         if (_life <= 0)
         {
             active = true;

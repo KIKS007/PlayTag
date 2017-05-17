@@ -43,6 +43,11 @@ public class Mouse : MonoBehaviour
 	public float pushCooldown = 1f;
     public GameObject pushAOE;
 
+	[Header("Wrap")]
+	public float xWidth;
+	public float yWidth;
+
+    private List<GameObject> _triggered = new List<GameObject>();
 	private Rigidbody _rigidbody;
     private MeshRenderer _rend;
     private Color _tempColor = new Color();
@@ -104,6 +109,7 @@ public class Mouse : MonoBehaviour
 	void Push ()
 	{
 		pushState = PushState.Pushing;
+        _triggered.Clear();
         pushAOE.SetActive(true);
 
 
@@ -149,6 +155,14 @@ public class Mouse : MonoBehaviour
     //PushTrigger
     void OnTriggerEnter (Collider col)
     {
+        foreach(GameObject go in _triggered)
+        {
+            if (col.gameObject == go)
+                return;
+        }
+
+        _triggered.Add(col.gameObject);
+
         //button
         if (col.tag == "Button")
         {
