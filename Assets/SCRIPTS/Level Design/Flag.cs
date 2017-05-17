@@ -18,7 +18,8 @@ public class Flag : Interrupter
 	}
 	
 
-	void Update () {
+	void Update () 
+	{
 		if(mouseList.Count > 0 && !active)
         {
             _remainingTime -= Time.deltaTime * (1 + (multiplePlayerFactor * (mouseList.Count - 1)));

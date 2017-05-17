@@ -51,8 +51,8 @@ public class TournamentManager : MonoBehaviour {
 
 			_currentScene = null;
 
+			Debug.Log("End tournament");
 			MenuManager.Instance.MainMenu ();
-            Debug.Log("end tournament");
         }
     }
 

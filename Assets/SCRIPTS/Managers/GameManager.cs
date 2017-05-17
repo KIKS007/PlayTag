@@ -43,9 +43,9 @@ public class GameManager : MonoBehaviour
     public float timer;
     public Text timerText;
 
-	public List<int> _controllerNumbers = new List<int> ();
+	private List<int> _controllerNumbers = new List<int> ();
 	private List<Transform> _spawnsTemp = new List<Transform> ();
-    public List<Mouse> _mouses = new List<Mouse>();
+	private List<Mouse> _mouses = new List<Mouse>();
     private float _timer;
     private Cat _cat;
 	private Transform _playersParent;
@@ -77,6 +77,8 @@ public class GameManager : MonoBehaviour
 		StatsManager.Instance.InitPlayerList();
 		StatsManager.Instance.EventSubscriber();
 
+		_mouses.Clear ();
+
 		_timer = timer;
 
 		foreach(GameObject go in mouses)
@@ -107,6 +109,9 @@ public class GameManager : MonoBehaviour
 		if(_timer <= 0f && gameState != GameState.Victory)
 		{
 			//  -CAT VICTORY-
+
+			//Debug.Log ("Timer Victory");
+
 			Victory(false);
 			timerText.text = "0.00";
 		}
@@ -201,12 +206,16 @@ public class GameManager : MonoBehaviour
                 return;
         }
 
+		//Debug.Log ("Button Victory");
+
         //  -MOUSE VICTORY-
         Victory(true);
     }
 
     public void CheckMouse()
     {
+//		Debug.Log ("Check Mouse");
+
         foreach(Mouse m in _mouses)
         {
             if(m.mouseState == MouseState.Normal)
@@ -214,6 +223,8 @@ public class GameManager : MonoBehaviour
                 return;
             }
         }
+
+//		Debug.Log ("Freeze Victory");
 
         Victory(false);
     }

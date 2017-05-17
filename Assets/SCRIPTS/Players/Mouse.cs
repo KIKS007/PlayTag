@@ -217,6 +217,7 @@ public class Mouse : MonoBehaviour
     {
         if(col.gameObject.tag == "Cat")
         {
+
 			if (mouseState == MouseState.Normal && col.gameObject.GetComponent<Cat> ().catstate != CatState.Stunned)
             {
                 mouseState = MouseState.Frozen;
