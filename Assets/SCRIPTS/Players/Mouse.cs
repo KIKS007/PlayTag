@@ -54,10 +54,13 @@ public class Mouse : MonoBehaviour
 	[HideInInspector]
 	public Vector3 _movement;
 
-    public event EventHandler OnFrozen;
+	public event EventHandler OnAttack;
+	public event EventHandler OnFrozen;
+    public event EventHandler OnUnfrozen;
     public event EventHandler OnSave;
     public event EventHandler OnCapture;
-    public event EventHandler OnStun;
+	public event EventHandler OnStun;
+    public event EventHandler OnDash;
     
     void Start () 
 	{
@@ -124,6 +127,9 @@ public class Mouse : MonoBehaviour
 
 	void Push ()
 	{
+		if (OnAttack != null)
+			OnAttack();
+
 		pushState = PushState.Pushing;
         _triggered.Clear();
         pushAOE.SetActive(true);
@@ -149,6 +155,9 @@ public class Mouse : MonoBehaviour
 	protected virtual IEnumerator Dash()
 	{
 		dashState = DashState.Dashing;
+
+		if (OnDash != null)
+			OnDash();
 
 		_dashSpeedTemp = dashSpeed;
 
@@ -229,6 +238,8 @@ public class Mouse : MonoBehaviour
                 mouseState = MouseState.Frozen;
                 _movement = Vector3.zero;
 
+				col.gameObject.GetComponent<Cat>().OnHitVoid ();
+
                 if (OnFrozen != null)
                     OnFrozen();
 
@@ -252,6 +263,9 @@ public class Mouse : MonoBehaviour
                 col.gameObject.GetComponent<Mouse>().OnSaveVoid();
 
                 _rend.material.color = _tempColor;
+
+				if (OnUnfrozen != null)
+					OnUnfrozen ();
 
                 mouseState = MouseState.Normal;
             }

@@ -36,6 +36,8 @@ public class MenuManager : Singleton<MenuManager>
 
 	public Player _rewiredPlayer1;
 
+	public event EventHandler OnMainMenu;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -74,7 +76,10 @@ public class MenuManager : Singleton<MenuManager>
 		if(GameManager.Instance.gameState == GameState.Menu)
 		{
 			if (_rewiredPlayer1.GetButtonDown ("Back") && currentMenu != null && currentMenu.previousMenu != null)
+			{
+				SoundsManager.Instance.PlaySound (SoundsManager.Instance.buttonCancel);
 				ShowMenu (currentMenu.previousMenu, false);
+			}
 		}
 	}
 
@@ -82,6 +87,7 @@ public class MenuManager : Singleton<MenuManager>
 	{
 		if(GameManager.Instance.gameState == GameState.Playing)
 		{
+			SoundsManager.Instance.PlaySound (SoundsManager.Instance.buttonSubmit);
 			//Pause
 			GameManager.Instance.gameState = GameState.Pause;
 			Time.timeScale = 0;
@@ -99,6 +105,7 @@ public class MenuManager : Singleton<MenuManager>
 		
 		else if(GameManager.Instance.gameState == GameState.Pause)
 		{
+			SoundsManager.Instance.PlaySound (SoundsManager.Instance.buttonCancel);
 			//Unpause
 			pauseMenu.GetComponent<RectTransform> ().DOAnchorPos (offScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=> 
 				{
@@ -204,7 +211,12 @@ public class MenuManager : Singleton<MenuManager>
 		}
 
 		if(targetMenu == mainMenu)
+		{
+			if(OnMainMenu != null)
+				OnMainMenu ();
+			
 			targetMenu.previousMenu = null;
+		}
 	}
 
 	public void Hide (MenuComponent targetMenu)

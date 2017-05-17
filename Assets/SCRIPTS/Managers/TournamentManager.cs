@@ -17,6 +17,7 @@ public class TournamentManager : MonoBehaviour
 
 	public event EventHandler OnNextRound;
 	public event EventHandler OnStartGame;
+	public event EventHandler OnEndMode;
 
     void Awake()
     {
@@ -56,6 +57,9 @@ public class TournamentManager : MonoBehaviour
 
 			//Debug.Log("End tournament");
 
+			if (OnEndMode!= null)
+				OnEndMode ();
+			
 			yield return 0;
         }
     }

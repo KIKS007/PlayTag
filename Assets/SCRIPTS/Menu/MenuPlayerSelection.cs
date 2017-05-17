@@ -49,6 +49,8 @@ public class MenuPlayerSelection : MonoBehaviour
 				else
 					playersReady [i].SetActive (true);
 
+				SoundsManager.Instance.PlaySound (SoundsManager.Instance.buttonPlayer);
+
 				CheckCanPlay ();
 			}
 		}

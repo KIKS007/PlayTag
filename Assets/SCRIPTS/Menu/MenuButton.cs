@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class MenuButton : MonoBehaviour, ISubmitHandler, IPointerClickHandler
 {
@@ -21,9 +22,12 @@ public class MenuButton : MonoBehaviour, ISubmitHandler, IPointerClickHandler
 
 	void Show ()
 	{
+		if (!GetComponent<Button> ().IsInteractable ())
+			return;
+		
 		if (targetMenu != null)
 			MenuManager.Instance.ShowMenu (targetMenu, canComeBack);
-		else
-			Debug.LogWarning ("No Target Menu on " + gameObject.name);
+
+		SoundsManager.Instance.PlaySound (SoundsManager.Instance.buttonSubmit);
 	}
 }

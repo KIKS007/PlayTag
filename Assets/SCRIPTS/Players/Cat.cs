@@ -58,7 +58,15 @@ public class Cat : MonoBehaviour
 	private Rigidbody _rigidbody;
 	private Vector3 _movement;
 	private float _dashSpeedTemp;
+	private Vector3 _previousMovement;
+	private CatState _previousCatState;
 
+	public event EventHandler OnDash;
+	public event EventHandler OnDashAiming;
+	public event EventHandler OnMoving;
+	public event EventHandler OnStopMoving;
+	public event EventHandler OnStunned;
+	public event EventHandler OnHit;
 
     void Start () 
 	{
@@ -87,6 +95,23 @@ public class Cat : MonoBehaviour
 			StartCoroutine(DashAim());
 		
 		LookForward ();
+
+		if(_previousMovement != _movement)
+		{
+			if(_previousMovement == Vector3.zero && _movement != Vector3.zero && catstate != CatState.Stunned)
+			{
+				if (OnMoving != null)
+					OnMoving ();
+			}
+			if(_previousMovement != Vector3.zero && _movement == Vector3.zero || catstate == CatState.Stunned && _previousCatState != CatState.Stunned)
+			{
+				if (OnStopMoving != null)
+					OnStopMoving ();
+			}
+		}
+
+		_previousCatState = catstate;
+		_previousMovement = _movement;
 	}
 
 	void FixedUpdate ()
@@ -132,6 +157,9 @@ public class Cat : MonoBehaviour
 	{
 		dashState = DashState.DashAim;
 
+		if (OnDashAiming != null)
+			OnDashAiming ();
+
 		_rigidbody.velocity = Vector3.zero;
 
 		float holdTime = 0;
@@ -176,6 +204,9 @@ public class Cat : MonoBehaviour
 	{
 		_dashSpeedTemp = dashSpeed;
 
+		if (OnDash != null)
+			OnDash ();
+
 		dashState = DashState.Dashing;
 
 		float distance = Vector3.Distance (transform.position, dashTarget.position);
@@ -213,6 +244,9 @@ public class Cat : MonoBehaviour
 	{
 		catstate = CatState.Stunned;
 
+		if (OnStunned != null)
+			OnStunned ();
+		
 		StopCoroutine (DashAim ());
 		StopCoroutine (Dash ());
 
@@ -230,5 +264,11 @@ public class Cat : MonoBehaviour
 
 		dashState = DashState.CanDash;
 		catstate = CatState.Normal;
+	}
+
+	public void OnHitVoid ()
+	{
+		if (OnHit != null)
+			OnHit ();
 	}
 }

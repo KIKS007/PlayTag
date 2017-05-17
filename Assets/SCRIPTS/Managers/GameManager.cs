@@ -49,12 +49,15 @@ public class GameManager : MonoBehaviour
     public Text timerText;
 
 	private List<int> _controllerNumbers = new List<int> ();
-	public List<int> _previousCats = new List<int> ();
+	private List<int> _previousCats = new List<int> ();
 	private List<Transform> _spawnsTemp = new List<Transform> ();
+	[HideInInspector]
 	public List<Mouse> _mouses = new List<Mouse>();
     private float _timer;
+	[HideInInspector]
 	public Cat _cat;
 	private Transform _playersParent;
+	private int _timerSoundCount = 4;
 
     public static GameManager Instance;
 
@@ -84,6 +87,8 @@ public class GameManager : MonoBehaviour
 
 		_mouses.Clear ();
 
+		_timerSoundCount = 4;
+
 		SpawnPlayers ();
 
 		_timer = timer;
@@ -101,10 +106,6 @@ public class GameManager : MonoBehaviour
 	void Update ()
 	{
 		Timer ();
-
-		/*if (Input.GetKeyDown(KeyCode.Space))
-		if (gameState == GameState.Playing || gameState != GameState.Victory)
-            Restart();*/
 	}
 
 	void Timer ()
@@ -126,6 +127,25 @@ public class GameManager : MonoBehaviour
 		{
 			_timer -= Time.deltaTime;
 			timerText.text = _timer.ToString("F2");
+
+			if(_timer < 6f)
+			{
+				for(int i = 4; i > 0; i--)
+				{
+					if(_timer <= i && _timerSoundCount == i)
+					{
+						_timerSoundCount--;
+						SoundsManager.Instance.PlaySound (SoundsManager.Instance.timerLastSeconds1);
+						break;
+					}
+				}
+				
+				if(_timer <= 0 && _timerSoundCount == 0)
+				{
+					_timerSoundCount--;
+					SoundsManager.Instance.PlaySound (SoundsManager.Instance.timerLastSeconds2);
+				}
+			}
 		}
 		//
 
