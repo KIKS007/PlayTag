@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
 			return;
 
 		//  -TIMER-
-		if(_timer <= 0f)
+		if(_timer <= 0f && gameState != GameState.Victory)
 		{
 			//  -CAT VICTORY-
 			Victory(false);
@@ -192,6 +192,9 @@ public class GameManager : MonoBehaviour
 
     public void CheckButton()
     {
+		if (gameState == GameState.Victory)
+			return;
+		
         foreach(Interrupter b in buttons)
         {
             if (!b.active)
@@ -217,6 +220,8 @@ public class GameManager : MonoBehaviour
 
     void Victory(bool mouse)
     {
+		gameState = GameState.Victory;
+
         Time.timeScale = 0f;
 
         //mouses stats
