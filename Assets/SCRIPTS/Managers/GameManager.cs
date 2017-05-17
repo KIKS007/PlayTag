@@ -15,6 +15,9 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
+	[Header ("States")]
+	public GameState gameState = GameState.Playing;
+
 	[Header ("Players")]
 	public int playersCount = 0;
 	public GameObject cat;
@@ -46,7 +49,6 @@ public class GameManager : MonoBehaviour
     
     public static GameManager Instance;
 
-
     void Awake()
     {
         if(Instance == null)
@@ -61,41 +63,55 @@ public class GameManager : MonoBehaviour
 
 	void Start () 
 	{
-        Time.timeScale = 1f;
-		SpawnPlayers ();
-        _timer = timer;
-
-        foreach(GameObject go in mouses)
-        {
-            _mouses.Add(go.GetComponent<Mouse>());
-        }
-
-        for(int i = 0; i < playersCount; i++)
-        {
-            _scoreList.Add(0);
-        }
+		if (gameState == GameState.Playing)
+			Setup ();
     }
+
+	public void Setup ()
+	{
+		Time.timeScale = 1f;
+		SpawnPlayers ();
+		_timer = timer;
+
+		foreach(GameObject go in mouses)
+		{
+			_mouses.Add(go.GetComponent<Mouse>());
+		}
+
+		for(int i = 0; i < playersCount; i++)
+		{
+			_scoreList.Add(0);
+		}
+	}
 
 	void Update () 
 	{
-        //  -TIMER-
-        if(_timer <= 0f)
-        {
-            //  -CAT VICTORY-
-            Victory(false);
-            timerText.text = "0.00";
-        }
-        else
-        {
-            _timer -= Time.deltaTime;
-            timerText.text = _timer.ToString("F2");
-        }
-        //
+		Timer ();
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
+		if (Input.GetKeyDown(KeyCode.Space))
+		if (gameState == GameState.Playing || gameState != GameState.Victory)
             Restart();
-        }
+	}
+
+	void Timer ()
+	{
+		if (gameState != GameState.Playing)
+			return;
+
+		//  -TIMER-
+		if(_timer <= 0f)
+		{
+			//  -CAT VICTORY-
+			Victory(false);
+			timerText.text = "0.00";
+		}
+		else
+		{
+			_timer -= Time.deltaTime;
+			timerText.text = _timer.ToString("F2");
+		}
+		//
+
 	}
 
 	void SpawnPlayers ()
@@ -193,6 +209,8 @@ public class GameManager : MonoBehaviour
     void Victory(bool mouse)
     {
         Time.timeScale = 0f;
+
+		gameState = GameState.Victory;
 
         /*
         if (mouse)
