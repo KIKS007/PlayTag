@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Rewired;
+using DG.Tweening;
 
 public enum GameState
 {
@@ -94,7 +95,7 @@ public class GameManager : MonoBehaviour
 
 		_cat = cat.GetComponent<Cat>();
 
-		gameState = GameState.Playing;
+		DOVirtual.DelayedCall (MenuManager.Instance.startDelay, ()=> gameState = GameState.Playing);
 	}
 
 	void Update ()

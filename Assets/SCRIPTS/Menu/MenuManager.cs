@@ -13,6 +13,9 @@ public class MenuManager : Singleton<MenuManager>
 	public Vector2 onScreenPosition;
 	public float menuAnimationDuration = 0.5f;
 
+	[Header ("Mode Start")]
+	public float startDelay = 1f;
+
 	[Header ("Menus")]
 	public EventSystem eventSystem;
 	public GameObject menuCanvas;
