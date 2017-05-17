@@ -13,6 +13,8 @@ public enum GameState
     Pause
 }
 
+public delegate void EventHandler();
+
 public class GameManager : MonoBehaviour
 {
 	[Header ("Players")]
@@ -41,11 +43,10 @@ public class GameManager : MonoBehaviour
 	public List<int> _controllerNumbers = new List<int> ();
 	private List<Transform> _spawnsTemp = new List<Transform> ();
     public List<Mouse> _mouses = new List<Mouse>();
-    private List<int> _scoreList = new List<int>();
     private float _timer;
+    private Cat _cat;
     
     public static GameManager Instance;
-
 
     void Awake()
     {
@@ -63,17 +64,15 @@ public class GameManager : MonoBehaviour
 	{
         Time.timeScale = 1f;
 		SpawnPlayers ();
+        StatsManager.Instance.InitPlayerList();
+        StatsManager.Instance.EventSubscriber();
         _timer = timer;
 
         foreach(GameObject go in mouses)
         {
             _mouses.Add(go.GetComponent<Mouse>());
         }
-
-        for(int i = 0; i < playersCount; i++)
-        {
-            _scoreList.Add(0);
-        }
+        _cat = cat.GetComponent<Cat>();
     }
 
 	void Update () 
@@ -194,23 +193,24 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0f;
 
-        /*
-        if (mouse)
+        //mouses stats
+        foreach (Mouse mo in _mouses)
         {
-            foreach (GameObject go in mouses)
-            {
-                _scoreList[go.GetComponent<Mouse>().controllerNumber] += mousesWinScore;
-            }
+            StatsManager.Instance.playerList[mo.controllerNumber].mouseDuration += timer - _timer;
+            if(mouse)
+                StatsManager.Instance.playerList[mo.controllerNumber].win++;
+            else
+                StatsManager.Instance.playerList[mo.controllerNumber].lose++;
         }
+
+        //cat stats
+        StatsManager.Instance.playerList[_cat.controllerNumber].catDuration += timer - _timer;
+        if(mouse)
+            StatsManager.Instance.playerList[_cat.controllerNumber].lose++;
         else
-        {
-            _scoreList[cat.GetComponent<Cat>().controllerNumber] += catWinScore;
-        }
-        for(int i = 0; i < _scoreList.Count; i++)
-        {
-            Debug.Log("j" + (i + 1) + " : " + _scoreList[i]);
-        }
-        */
+            StatsManager.Instance.playerList[_cat.controllerNumber].win++;
+
+        TournamentManager.Instance.StartCoroutine("RoundEnd");
     }
 
     public void Restart()

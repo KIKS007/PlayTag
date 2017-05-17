@@ -62,7 +62,8 @@ public class Cat : MonoBehaviour
 	private Vector3 _movement;
 	private float _dashSpeedTemp;
 
-	void Start () 
+
+    void Start () 
 	{
 		_rigidbody = GetComponent<Rigidbody> ();
 		rewiredPlayer = ReInput.players.GetPlayer(controllerNumber);
