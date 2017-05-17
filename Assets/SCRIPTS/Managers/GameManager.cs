@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
     public List<Mouse> _mouses = new List<Mouse>();
     private float _timer;
     private Cat _cat;
+	private Transform _playersParent;
 
     public static GameManager Instance;
 
@@ -84,15 +85,17 @@ public class GameManager : MonoBehaviour
 		}
 
 		_cat = cat.GetComponent<Cat>();
+
+		gameState = GameState.Playing;
 	}
 
 	void Update ()
 	{
 		Timer ();
 
-		if (Input.GetKeyDown(KeyCode.Space))
+		/*if (Input.GetKeyDown(KeyCode.Space))
 		if (gameState == GameState.Playing || gameState != GameState.Victory)
-            Restart();
+            Restart();*/
 	}
 
 	void Timer ()
@@ -118,6 +121,8 @@ public class GameManager : MonoBehaviour
 
 	void SpawnPlayers ()
 	{
+		_playersParent = GameObject.Find ("PlayersParent").transform;
+
 		_controllerNumbers.Clear ();
 		mouses.Clear ();
 		_spawnsTemp.Clear ();
@@ -148,6 +153,8 @@ public class GameManager : MonoBehaviour
 			if (playersCount == 1)
 			{
 				playersCount = 2;
+				_controllerNumbers.Clear ();
+				_controllerNumbers.Add (0);
 				_controllerNumbers.Add (1);
 			}
 		}
@@ -169,7 +176,7 @@ public class GameManager : MonoBehaviour
 		Transform spawn = _spawnsTemp [Random.Range (0, _spawnsTemp.Count)];
 		_spawnsTemp.Remove (spawn);
 
-		cat = Instantiate (catPrefab, spawn.position, catPrefab.transform.rotation) as GameObject;
+		cat = Instantiate (catPrefab, spawn.position, catPrefab.transform.rotation, _playersParent) as GameObject;
 		cat.GetComponent<Cat> ().SetupRewired (controllerNumber);
 	}
 
@@ -178,7 +185,7 @@ public class GameManager : MonoBehaviour
 		Transform spawn = _spawnsTemp [Random.Range (0, _spawnsTemp.Count)];
 		_spawnsTemp.Remove (spawn);
 
-		mouses.Add (Instantiate (mousePrefab, spawn.position, mousePrefab.transform.rotation) as GameObject);
+		mouses.Add (Instantiate (mousePrefab, spawn.position, mousePrefab.transform.rotation, _playersParent) as GameObject);
 		mouses [mouses.Count - 1].GetComponent<Mouse> ().SetupRewired (controllerNumber);
 		mouses [mouses.Count - 1].GetComponent<Renderer> ().material.color = Random.ColorHSV ();
 	}

@@ -16,7 +16,8 @@ public class MenuManager : Singleton<MenuManager>
 	[Header ("Menus")]
 	public EventSystem eventSystem;
 	public GameObject menuCanvas;
-	public GameObject mainMenu;
+	public GameObject timerCanvas;
+	public MenuComponent mainMenu;
 	public RectTransform pauseMenu;
 
 	[Header ("Menu State")]
@@ -50,7 +51,10 @@ public class MenuManager : Singleton<MenuManager>
 
 	void NothingSelected ()
 	{
-		if (eventSystem.currentSelectedGameObject == null && currentMenu.selectable != null)
+		if (GameManager.Instance.gameState == GameState.Playing)
+			return;
+
+		if (eventSystem.currentSelectedGameObject == null && currentMenu != null && currentMenu.selectable != null)
 			eventSystem.SetSelectedGameObject (currentMenu.selectable);
 	}
 
@@ -80,7 +84,7 @@ public class MenuManager : Singleton<MenuManager>
 							eventSystem.SetSelectedGameObject (null);
 							eventSystem.SetSelectedGameObject (pauseMenu.GetComponent<MenuComponent> ()._previousSelection);
 						}
-					});
+					}).SetUpdate (true);
 
 			}
 
@@ -95,14 +99,20 @@ public class MenuManager : Singleton<MenuManager>
 						eventSystem.SetSelectedGameObject (null);
 						Time.timeScale = 1;
 						pauseMenu.gameObject.SetActive (false);
-					});
+					}).SetUpdate (true);
 			}
 		}
 	}
 
 	public void StartGame ()
 	{
-		
+		Hide (currentMenu);
+
+		DOVirtual.DelayedCall (menuAnimationDuration, ()=> 
+			{
+				timerCanvas.gameObject.SetActive (true);
+				TournamentManager.Instance.StartGame ();
+			}).SetUpdate (true);
 	}
 
 	public void HideAll ()
@@ -114,12 +124,19 @@ public class MenuManager : Singleton<MenuManager>
 		}
 	}
 
-	public void ShowInstantMenu (GameObject menu)
+	public void ShowInstantMenu (MenuComponent menu)
 	{
-		menu.SetActive (true);
+		menu.gameObject.SetActive (true);
 		menu.GetComponent<RectTransform> ().anchoredPosition = onScreenPosition;
 	}
 
+	public void MainMenu ()
+	{
+		ShowMenu (mainMenu);
+		Time.timeScale = 1;
+		GameManager.Instance.gameState = GameState.Menu;
+		timerCanvas.gameObject.SetActive (false);
+	}
 
 	public void ShowMenu (MenuComponent currentMenu, MenuComponent targetMenu)
 	{
@@ -146,7 +163,42 @@ public class MenuManager : Singleton<MenuManager>
 					eventSystem.SetSelectedGameObject (null);
 					eventSystem.SetSelectedGameObject (targetMenu.selectable);
 				}
-		});
+			}).SetUpdate (true);
+	}
+
+	public void ShowMenu (MenuComponent targetMenu)
+	{
+		this.currentMenu = targetMenu;
+
+		targetMenu.gameObject.SetActive (true);
+
+		targetMenu._rect.DOAnchorPos (onScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=>
+			{
+				if(targetMenu._previousSelection != null)
+				{
+					eventSystem.SetSelectedGameObject (null);
+					eventSystem.SetSelectedGameObject (targetMenu._previousSelection);
+				}
+
+				else if(targetMenu.selectable != null)
+				{
+					eventSystem.SetSelectedGameObject (null);
+					eventSystem.SetSelectedGameObject (targetMenu.selectable);
+				}
+			}).SetUpdate (true);
+	}
+
+
+	public void Hide (MenuComponent targetMenu)
+	{
+		targetMenu._previousSelection = eventSystem.currentSelectedGameObject;
+
+		targetMenu._rect.DOAnchorPos (offScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=>
+			{
+				targetMenu.gameObject.SetActive (false);
+				eventSystem.SetSelectedGameObject (null);
+				this.currentMenu = null;
+			}).SetUpdate (true);
 	}
 
 	public void Quit ()

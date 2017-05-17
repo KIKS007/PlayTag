@@ -6,10 +6,10 @@ using UnityEngine.SceneManagement;
 public class TournamentManager : MonoBehaviour {
 
     public int roundCount;
-    public List<string> levelPool = new List<string>();
-    private List<string> _levelPool = new List<string>();
+	public List<string> levelPool = new List<string>();
+	private int _currentRound;
+	private List<string> _levelPool = new List<string>();
     private string _currentScene;
-    private int _currentRound;
 
     public static TournamentManager Instance;
 
@@ -25,8 +25,9 @@ public class TournamentManager : MonoBehaviour {
         }
     }
 
-    void Start () {
-        _levelPool = levelPool;
+    void Start () 
+	{
+		_levelPool.AddRange (levelPool);
         _currentRound = 0;
 	}
 	
@@ -36,37 +37,49 @@ public class TournamentManager : MonoBehaviour {
 
     public IEnumerator RoundEnd()
     {
-        if(_currentRound < roundCount - 1)
+        if(_currentRound < roundCount)
         {
+			Debug.Log("Next Round");
+
             //yield return new WaitWhile(() =>true);
             yield return 0;
             StartCoroutine(NextRound());
         }
         else
         {
+			yield return SceneManager.UnloadSceneAsync(_currentScene);
+
+			_currentScene = null;
+
+			MenuManager.Instance.MainMenu ();
             Debug.Log("end tournament");
         }
     }
 
-    IEnumerator NextRound()
+	public void StartGame ()
+	{
+		_levelPool.AddRange (levelPool);
+		_currentRound = 0;
+
+		StartCoroutine (NextRound ());
+	}
+
+    public IEnumerator NextRound()
     {
-        string randScene = _levelPool[Random.Range(0, _levelPool.Count - 1)];
+		if(_levelPool.Count == 0)
+			_levelPool.AddRange (levelPool);
+
+        string randScene = _levelPool [Random.Range (0, _levelPool.Count)];
+
+		_levelPool.Remove(randScene);
 
         if (_currentScene != null)
-        {
             yield return SceneManager.UnloadSceneAsync(_currentScene);
 
-            //manage levelpool
-            _levelPool.Remove(_currentScene);
-            if(_levelPool.Count == 0)
-            {
-                _levelPool = levelPool;
-            }
-        }
-
-        yield return SceneManager.LoadSceneAsync (randScene);
+		yield return SceneManager.LoadSceneAsync (randScene, LoadSceneMode.Additive);
 
         _currentScene = randScene;
+		_currentRound++;
 
         //get buttons
         GameManager.Instance.buttons.Clear();
@@ -84,5 +97,6 @@ public class TournamentManager : MonoBehaviour {
             GameManager.Instance.spawns.Add(go.transform);
         }
 
+		GameManager.Instance.Setup ();
     }
 }

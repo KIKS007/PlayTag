@@ -1,4 +1,4 @@
-﻿﻿using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Rewired;
@@ -178,6 +178,9 @@ public class Cat : MonoBehaviour
 
 		while (dashState != DashState.Cooldown)
 		{
+			if (catstate == CatState.Stunned)
+				yield break;
+
 			movementTemp = dashTargetTemp - transform.position;
 
 			if(_rigidbody.velocity.magnitude < 1)
@@ -199,6 +202,14 @@ public class Cat : MonoBehaviour
 	public virtual IEnumerator Stun ()
 	{
 		catstate = CatState.Stunned;
+
+		StopCoroutine (DashAim ());
+		StopCoroutine (Dash ());
+
+		dashState = DashState.CanDash;
+		dashLineRenderer.gameObject.SetActive (false);
+		dashTarget.gameObject.SetActive (false);
+
 
 		Color initialColor = GetComponent<Renderer> ().material.color;
 		GetComponent<Renderer> ().material.color = Color.black;
