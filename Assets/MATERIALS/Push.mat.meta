@@ -1,14 +1,7 @@
 fileFormatVersion: 2
-<<<<<<< HEAD:Assets/SCENES/Kiki.unity.meta
-guid: 5a2e4c5e1ee326549aebfd166b5a4ed3
-timeCreated: 1494839844
-=======
-guid: 732ac760c2b64d344adaed747a9ff01b
-timeCreated: 1494929516
->>>>>>> tibo:Assets/MATERIALS/Push.mat.meta
-licenseType: Pro
+guid: 2bc94d4d593e2c5409d59b1677745955
 NativeFormatImporter:
-  mainObjectFileID: 2100000
+  mainObjectFileID: -1
   userData: 
   assetBundleName: 
   assetBundleVariant: 
