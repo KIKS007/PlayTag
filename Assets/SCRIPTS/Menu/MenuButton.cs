@@ -7,15 +7,7 @@ public class MenuButton : MonoBehaviour, ISubmitHandler, IPointerClickHandler
 {
 	[Header ("Target Menu")]
 	public MenuComponent targetMenu;
-	[HideInInspector]
-	public MenuComponent currentMenu;
-
-	// Use this for initialization
-	void Start () 
-	{
-		if(currentMenu == null)
-			currentMenu = transform.GetComponentInParent<MenuComponent> ();
-	}
+	public bool canComeBack = true;
 
 	public void OnSubmit (BaseEventData eventData)
 	{
@@ -30,7 +22,7 @@ public class MenuButton : MonoBehaviour, ISubmitHandler, IPointerClickHandler
 	void Show ()
 	{
 		if (targetMenu != null)
-			MenuManager.Instance.ShowMenu (currentMenu, targetMenu);
+			MenuManager.Instance.ShowMenu (targetMenu, canComeBack);
 		else
 			Debug.LogWarning ("No Target Menu on " + gameObject.name);
 	}

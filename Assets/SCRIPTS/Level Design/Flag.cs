@@ -20,6 +20,9 @@ public class Flag : Interrupter
 
 	void Update () 
 	{
+		if (active)
+			return;
+		
 		if(mouseList.Count > 0 && !active)
         {
             _remainingTime -= Time.deltaTime * (1 + (multiplePlayerFactor * (mouseList.Count - 1)));
@@ -43,7 +46,10 @@ public class Flag : Interrupter
     //Trigger
     public void OnTriggerEnter(Collider col)
     {
-        if(col.tag == "Mouse")
+		if (active)
+			return;
+
+		if(col.tag == "Mouse")
         {
             Mouse mo = col.GetComponent<Mouse>();
             if (mo.mouseState == MouseState.Normal)
@@ -55,7 +61,10 @@ public class Flag : Interrupter
 
     public void OnTriggerExit(Collider col)
     {
-        if(col.tag == "Mouse")
+		if (active)
+			return;
+
+		if(col.tag == "Mouse")
         {
             Mouse mo = col.GetComponent<Mouse>();
             if (mo.mouseState == MouseState.Normal)
@@ -63,10 +72,5 @@ public class Flag : Interrupter
                 mouseList.Remove(mo);
             }
         }
-    }
-
-    public override void Activate()
-    {
-        
     }
 }

@@ -25,6 +25,10 @@ public class GameManager : MonoBehaviour
 	public GameObject cat;
 	public List<GameObject> mouses = new List<GameObject> ();
 
+	[Header ("Color")]
+	public Color catColor;
+	public Color[] mousesColor = new Color[4];
+
     [Header("Scores")]
     public int catWinScore;
     public int mousesWinScore;
@@ -44,13 +48,16 @@ public class GameManager : MonoBehaviour
     public Text timerText;
 
 	private List<int> _controllerNumbers = new List<int> ();
+	public List<int> _previousCats = new List<int> ();
 	private List<Transform> _spawnsTemp = new List<Transform> ();
-	private List<Mouse> _mouses = new List<Mouse>();
+	public List<Mouse> _mouses = new List<Mouse>();
     private float _timer;
-    private Cat _cat;
+	public Cat _cat;
 	private Transform _playersParent;
 
     public static GameManager Instance;
+
+	public event EventHandler OnVictory;
 
     void Awake()
     {
@@ -73,11 +80,10 @@ public class GameManager : MonoBehaviour
 	public void Setup ()
 	{
 		Time.timeScale = 1f;
-		SpawnPlayers ();
-		StatsManager.Instance.InitPlayerList();
-		StatsManager.Instance.EventSubscriber();
 
 		_mouses.Clear ();
+
+		SpawnPlayers ();
 
 		_timer = timer;
 
@@ -164,15 +170,30 @@ public class GameManager : MonoBehaviour
 			}
 		}
 
+		TournamentManager.Instance.roundCount = playersCount * 2;
+
+		if (_previousCats.Count == playersCount)
+			_previousCats.Clear ();
+
 		for(int i = 0; i < playersCount; i++)
 		{
 			int randomControllerNumber = _controllerNumbers [Random.Range (0, _controllerNumbers.Count)];
-			_controllerNumbers.Remove (randomControllerNumber);
 
 			if (i == 0)
+			{
+				do
+				{
+					randomControllerNumber = _controllerNumbers [Random.Range (0, _controllerNumbers.Count)];
+				}
+				while (_previousCats.Contains (randomControllerNumber));
+
+				_previousCats.Add (randomControllerNumber);
 				SpawnCat (randomControllerNumber);
+			}
 			else
 				SpawnMouse (randomControllerNumber);
+
+			_controllerNumbers.Remove (randomControllerNumber);
 		}
 	}
 
@@ -183,6 +204,7 @@ public class GameManager : MonoBehaviour
 
 		cat = Instantiate (catPrefab, spawn.position, catPrefab.transform.rotation, _playersParent) as GameObject;
 		cat.GetComponent<Cat> ().SetupRewired (controllerNumber);
+		cat.GetComponent<Renderer> ().material.color = catColor;
 	}
 
 	void SpawnMouse (int controllerNumber)
@@ -192,7 +214,7 @@ public class GameManager : MonoBehaviour
 
 		mouses.Add (Instantiate (mousePrefab, spawn.position, mousePrefab.transform.rotation, _playersParent) as GameObject);
 		mouses [mouses.Count - 1].GetComponent<Mouse> ().SetupRewired (controllerNumber);
-		mouses [mouses.Count - 1].GetComponent<Renderer> ().material.color = Random.ColorHSV ();
+		mouses [mouses.Count - 1].GetComponent<Renderer> ().material.color = mousesColor [controllerNumber];
 	}
 
     public void CheckButton()
@@ -252,8 +274,18 @@ public class GameManager : MonoBehaviour
         else
             StatsManager.Instance.playerList[_cat.controllerNumber].win++;
 
-        TournamentManager.Instance.StartCoroutine("RoundEnd");
+		if(OnVictory != null)
+			OnVictory ();
+
+		StartCoroutine (VictoryCoroutine (mouse));
     }
+
+	IEnumerator VictoryCoroutine (bool mouse)
+	{
+		yield return MenuManager.Instance.StartCoroutine("EndMenu", !mouse);
+
+		TournamentManager.Instance.StartCoroutine("RoundEnd");
+	}
 
     public void Restart()
     {

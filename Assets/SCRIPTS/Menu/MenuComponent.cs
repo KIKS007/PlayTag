@@ -7,6 +7,9 @@ public class MenuComponent : MonoBehaviour
 	[Header ("Selectable")]
 	public GameObject selectable;
 
+	[Header ("Previous Menu")]
+	public MenuComponent previousMenu;
+
 	[Header ("Above Menu")]
 	public MenuComponent aboveMenu;
 

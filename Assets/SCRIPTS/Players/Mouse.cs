@@ -74,6 +74,9 @@ public class Mouse : MonoBehaviour
 	
 	void Update () 
 	{
+		if (GameManager.Instance.gameState != GameState.Playing)
+			return;
+
         if (mouseState == MouseState.Normal)
         {
             //Movement Vector
@@ -94,6 +97,9 @@ public class Mouse : MonoBehaviour
 
 	void FixedUpdate ()
 	{
+		if (GameManager.Instance.gameState != GameState.Playing)
+			return;
+		
 		Movement ();
 
 		Gravity ();

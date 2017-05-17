@@ -23,7 +23,6 @@ public class Cat : MonoBehaviour
 {
 	[Header("Controller Number")]
 	public int controllerNumber = -1;
-	[HideInInspector]
 	public Player rewiredPlayer; // The Rewired Player
 
 	[Header("States")]
@@ -47,14 +46,11 @@ public class Cat : MonoBehaviour
 	public float dashLengthFactor = 10;
 	public float timeToMaxDuration;
 	public float timeReductionFactor = 0.7f;
+	public float dashCooldown = 1f;
 
 	[Header("Dash Target")]
 	public LayerMask wallMask = 1 << 10;
 	public Transform dashTarget;
-
-	[Header("Dash End")]
-	public float dashEndDuration = 0.2f;
-	public float dashCooldown = 1f;
 
 	[Header("Dash Line Renderer")]
 	public LineRenderer dashLineRenderer;
@@ -79,6 +75,9 @@ public class Cat : MonoBehaviour
 
 	void Update () 
 	{
+		if (GameManager.Instance.gameState != GameState.Playing)
+			return;
+
 		//Movement Vector
 		_movement = new Vector3(rewiredPlayer.GetAxisRaw("Move Horizontal"), 0f, rewiredPlayer.GetAxisRaw("Move Vertical"));
 		_movement.Normalize();
@@ -92,6 +91,9 @@ public class Cat : MonoBehaviour
 
 	void FixedUpdate ()
 	{
+		if (GameManager.Instance.gameState != GameState.Playing)
+			return;
+		
 		Movement ();
 
 		Gravity ();

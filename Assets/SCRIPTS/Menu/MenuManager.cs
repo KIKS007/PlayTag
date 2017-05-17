@@ -18,11 +18,18 @@ public class MenuManager : Singleton<MenuManager>
 	public GameObject menuCanvas;
 	public GameObject timerCanvas;
 	public MenuComponent mainMenu;
-	public RectTransform pauseMenu;
+	public MenuComponent leadeboardMenu;
+	public MenuComponent pauseMenu;
+
+	[Header ("End Mode")]
+	public float endMenuDelay = 1;
+	public float endMenuDuration;
+	public MenuComponent endMode;
+	public GameObject catWon;
+	public GameObject mousesWon;
 
 	[Header ("Menu State")]
 	public MenuComponent currentMenu;
-	public MenuComponent previousMenu;
 
 	public Player _rewiredPlayer1;
 
@@ -44,7 +51,8 @@ public class MenuManager : Singleton<MenuManager>
 	{
 		BackInput ();
 
-		PauseInput ();
+		if (_rewiredPlayer1.GetButtonDown ("Pause"))
+			Pause ();
 
 		NothingSelected ();
 	}
@@ -62,45 +70,42 @@ public class MenuManager : Singleton<MenuManager>
 	{
 		if(GameManager.Instance.gameState == GameState.Menu)
 		{
-			if (_rewiredPlayer1.GetButtonDown ("Back") && previousMenu != null)
-				ShowMenu (currentMenu, previousMenu);
+			if (_rewiredPlayer1.GetButtonDown ("Back") && currentMenu != null && currentMenu.previousMenu != null)
+				ShowMenu (currentMenu.previousMenu, false);
 		}
 	}
 
-	public void PauseInput ()
+	public void Pause ()
 	{
-		if (_rewiredPlayer1.GetButtonDown ("Pause"))
+		if(GameManager.Instance.gameState == GameState.Playing)
 		{
-			if(GameManager.Instance.gameState == GameState.Playing)
-			{
-				//Pause
-				Time.timeScale = 0;
-				pauseMenu.gameObject.SetActive (true);
+			//Pause
+			GameManager.Instance.gameState = GameState.Pause;
+			Time.timeScale = 0;
+			pauseMenu.gameObject.SetActive (true);
+			
+			pauseMenu.GetComponent<RectTransform> ().DOAnchorPos (onScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=> 
+				{
+					currentMenu = pauseMenu.GetComponent<MenuComponent> ();
+					eventSystem.SetSelectedGameObject (null);
+					eventSystem.SetSelectedGameObject (pauseMenu.GetComponent<MenuComponent> ().selectable);
 
-				pauseMenu.DOAnchorPos (onScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=> 
-					{
-						if(pauseMenu.GetComponent<MenuComponent> ()._previousSelection != null)
-						{
-							eventSystem.SetSelectedGameObject (null);
-							eventSystem.SetSelectedGameObject (pauseMenu.GetComponent<MenuComponent> ()._previousSelection);
-						}
-					}).SetUpdate (true);
+				}).SetUpdate (true);
+			
+		}
+		
+		else if(GameManager.Instance.gameState == GameState.Pause)
+		{
+			//Unpause
+			pauseMenu.GetComponent<RectTransform> ().DOAnchorPos (offScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=> 
+				{
+					eventSystem.SetSelectedGameObject (null);
+					pauseMenu.gameObject.SetActive (false);
+					Time.timeScale = 1;
+					currentMenu = null;
+					GameManager.Instance.gameState = GameState.Playing;
 
-			}
-
-			else if(GameManager.Instance.gameState == GameState.Pause)
-			{
-				//Unpause
-				Time.timeScale = 0;
-				pauseMenu.gameObject.SetActive (true);
-
-				pauseMenu.DOAnchorPos (offScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=> 
-					{
-						eventSystem.SetSelectedGameObject (null);
-						Time.timeScale = 1;
-						pauseMenu.gameObject.SetActive (false);
-					}).SetUpdate (true);
-			}
+				}).SetUpdate (true);
 		}
 	}
 
@@ -128,66 +133,76 @@ public class MenuManager : Singleton<MenuManager>
 	{
 		menu.gameObject.SetActive (true);
 		menu.GetComponent<RectTransform> ().anchoredPosition = onScreenPosition;
+		currentMenu = menu;
 	}
 
 	public void MainMenu ()
 	{
-		ShowMenu (mainMenu);
+		StartCoroutine (MainMenuCoroutine ());
+	}
+
+	IEnumerator MainMenuCoroutine ()
+	{
+		yield return TournamentManager.Instance.StartCoroutine ("UnloadLevel");
+
 		Time.timeScale = 1;
 		GameManager.Instance.gameState = GameState.Menu;
 		timerCanvas.gameObject.SetActive (false);
+
+		ShowMenu (mainMenu);
 	}
 
-	public void ShowMenu (MenuComponent currentMenu, MenuComponent targetMenu)
+	public void ShowMenu (MenuComponent targetMenu, bool back = true)
 	{
-		currentMenu._previousSelection = eventSystem.currentSelectedGameObject;
-
-		previousMenu = currentMenu;
-		this.currentMenu = targetMenu;
-
-		targetMenu.gameObject.SetActive (true);
-
-		currentMenu._rect.DOAnchorPos (offScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=>
+		if(currentMenu != null)
 		{
-				targetMenu._rect.DOAnchorPos (onScreenPosition, menuAnimationDuration).SetEase (menuEase);
-				currentMenu.gameObject.SetActive (false);
+			MenuComponent previousMenu = currentMenu;
+			previousMenu._previousSelection = eventSystem.currentSelectedGameObject;
 
-				if(targetMenu._previousSelection != null)
-				{
-					eventSystem.SetSelectedGameObject (null);
-					eventSystem.SetSelectedGameObject (targetMenu._previousSelection);
-				}
+			if(back)
+				targetMenu.previousMenu = previousMenu;
 
-				else if(targetMenu.selectable != null)
+			eventSystem.SetSelectedGameObject (null);
+
+			currentMenu = targetMenu;
+
+			targetMenu.gameObject.SetActive (true);
+
+			previousMenu._rect.DOAnchorPos (offScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=>
 				{
-					eventSystem.SetSelectedGameObject (null);
-					eventSystem.SetSelectedGameObject (targetMenu.selectable);
-				}
-			}).SetUpdate (true);
+					previousMenu.gameObject.SetActive (false);
+
+					targetMenu._rect.DOAnchorPos (onScreenPosition, menuAnimationDuration).SetEase (menuEase);
+
+					if(targetMenu._previousSelection != null)
+						eventSystem.SetSelectedGameObject (targetMenu._previousSelection);
+
+					else if(targetMenu.selectable != null)
+						eventSystem.SetSelectedGameObject (targetMenu.selectable);
+					
+				}).SetUpdate (true);
+		}
+		else
+		{
+			currentMenu = targetMenu;
+
+			targetMenu.gameObject.SetActive (true);
+			eventSystem.SetSelectedGameObject (null);
+
+			targetMenu._rect.DOAnchorPos (onScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=>
+				{
+					if(targetMenu._previousSelection != null)
+						eventSystem.SetSelectedGameObject (targetMenu._previousSelection);
+
+					else if(targetMenu.selectable != null)
+						eventSystem.SetSelectedGameObject (targetMenu.selectable);
+					
+				}).SetUpdate (true);
+		}
+
+		if(targetMenu == mainMenu)
+			targetMenu.previousMenu = null;
 	}
-
-	public void ShowMenu (MenuComponent targetMenu)
-	{
-		this.currentMenu = targetMenu;
-
-		targetMenu.gameObject.SetActive (true);
-
-		targetMenu._rect.DOAnchorPos (onScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=>
-			{
-				if(targetMenu._previousSelection != null)
-				{
-					eventSystem.SetSelectedGameObject (null);
-					eventSystem.SetSelectedGameObject (targetMenu._previousSelection);
-				}
-
-				else if(targetMenu.selectable != null)
-				{
-					eventSystem.SetSelectedGameObject (null);
-					eventSystem.SetSelectedGameObject (targetMenu.selectable);
-				}
-			}).SetUpdate (true);
-	}
-
 
 	public void Hide (MenuComponent targetMenu)
 	{
@@ -197,8 +212,31 @@ public class MenuManager : Singleton<MenuManager>
 			{
 				targetMenu.gameObject.SetActive (false);
 				eventSystem.SetSelectedGameObject (null);
-				this.currentMenu = null;
+				currentMenu = null;
 			}).SetUpdate (true);
+	}
+
+	public IEnumerator EndMenu (bool cat)
+	{
+		yield return new WaitForSecondsRealtime (endMenuDelay);
+
+		catWon.SetActive (false);
+		mousesWon.SetActive (false);
+
+		if (cat)
+			catWon.SetActive (true);
+		else
+			mousesWon.SetActive (true);
+
+		ShowMenu (endMode, false);
+
+		yield return new WaitForSecondsRealtime (menuAnimationDuration);
+
+		yield return new WaitForSecondsRealtime (endMenuDuration);
+
+		Hide (endMode);
+
+		yield return new WaitForSecondsRealtime (menuAnimationDuration * 2);
 	}
 
 	public void Quit ()

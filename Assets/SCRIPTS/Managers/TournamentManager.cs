@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TournamentManager : MonoBehaviour {
+public class TournamentManager : MonoBehaviour 
+{
 
+	[HideInInspector]
     public int roundCount;
 	public List<string> levelPool = new List<string>();
 	private int _currentRound;
@@ -12,6 +14,9 @@ public class TournamentManager : MonoBehaviour {
     private string _currentScene;
 
     public static TournamentManager Instance;
+
+	public event EventHandler OnNextRound;
+	public event EventHandler OnStartGame;
 
     void Awake()
     {
@@ -39,27 +44,37 @@ public class TournamentManager : MonoBehaviour {
     {
         if(_currentRound < roundCount)
         {
-			Debug.Log("Next Round");
+			//Debug.Log("Next Round");
 
-            //yield return new WaitWhile(() =>true);
             yield return 0;
             StartCoroutine(NextRound());
         }
         else
         {
-			yield return SceneManager.UnloadSceneAsync(_currentScene);
+			MenuManager.Instance.ShowMenu(MenuManager.Instance.leadeboardMenu);
+			MenuManager.Instance.timerCanvas.SetActive (false);
 
-			_currentScene = null;
+			//Debug.Log("End tournament");
 
-			Debug.Log("End tournament");
-			MenuManager.Instance.MainMenu ();
+			yield return 0;
         }
     }
+
+	public IEnumerator UnloadLevel ()
+	{
+		if(_currentScene != null)
+			yield return SceneManager.UnloadSceneAsync(_currentScene);
+
+		_currentScene = null;
+	}
 
 	public void StartGame ()
 	{
 		_levelPool.AddRange (levelPool);
 		_currentRound = 0;
+
+		if (OnStartGame != null)
+			OnStartGame ();
 
 		StartCoroutine (NextRound ());
 	}
@@ -98,5 +113,8 @@ public class TournamentManager : MonoBehaviour {
         }
 
 		GameManager.Instance.Setup ();
+
+		if (OnNextRound != null)
+			OnNextRound ();
     }
 }

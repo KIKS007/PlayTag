@@ -10,8 +10,7 @@ public class MenuPlayerSelection : MonoBehaviour
 
 	public GameObject[] playersIcon = new GameObject[0];
 
-	public GameObject[] playersReady = new GameObject[0];
-
+	private GameObject[] playersReady = new GameObject[4];
 	public Player[] _rewiredPlayer = new Player[4];
 
 	// Use this for initialization
@@ -19,9 +18,6 @@ public class MenuPlayerSelection : MonoBehaviour
 	{
 		for (int i = 0; i < _rewiredPlayer.Length; i++)
 			_rewiredPlayer [i] = ReInput.players.GetPlayer (i);
-
-		for (int i = 0; i < playersReady.Length; i++)
-			playersReady [i] = playersIcon [i].transform.GetChild (2).gameObject;
 
 		ReInput.ControllerConnectedEvent += (ControllerStatusChangedEventArgs obj) => RefreshIcons ();
 		ReInput.ControllerDisconnectedEvent += (ControllerStatusChangedEventArgs obj) => RefreshIcons ();
@@ -33,8 +29,13 @@ public class MenuPlayerSelection : MonoBehaviour
 	{
 		RefreshIcons ();
 
+		for (int i = 0; i < playersReady.Length; i++)
+			playersReady [i] = playersIcon [i].transform.GetChild (1).gameObject;
+
 		foreach (GameObject ready in playersReady)
 			ready.SetActive (false);
+
+		CheckCanPlay ();
 	}
 
 	void Update ()
@@ -57,15 +58,26 @@ public class MenuPlayerSelection : MonoBehaviour
 	{
 		bool canPlay = true;
 
-		foreach (GameObject g in playersReady)
-			if (!g.activeSelf)
+		for (int i = 0; i < ReInput.controllers.joystickCount; i++)
+			if(i < 4)
+			if (!playersReady [i].activeSelf)
 				canPlay = false;
+		
+		if (ReInput.controllers.joystickCount < 2)
+			canPlay = false;
 
 		if (canPlay)
+		{
 			startButton.interactable = true;
+			MenuManager.Instance.eventSystem.SetSelectedGameObject (null);
+			MenuManager.Instance.eventSystem.SetSelectedGameObject (startButton.gameObject);
+		}
 		else
+		{
+			
 			startButton.interactable = false;
-
+		}
+		
 		return canPlay;
 	}
 

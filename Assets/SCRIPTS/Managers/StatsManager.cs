@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Rewired;
 
 public class StatsManager : MonoBehaviour
 {
@@ -21,26 +22,31 @@ public class StatsManager : MonoBehaviour
     }
 
 
-    void Start () {
-		
+    void Start () 
+	{
+		TournamentManager.Instance.OnStartGame += InitPlayerList;
+		TournamentManager.Instance.OnNextRound += EventSubscriber;
 	}
 
     public void InitPlayerList ()
     {
         playerList.Clear();
 
-        for(int i = 0; i < GameManager.Instance.playersCount; i++)
+		for(int i = 0; i < ReInput.controllers.joystickCount; i++)
             playerList.Add(new playerStats());
     }
 
     public void EventSubscriber()
     {
         int catControllerNumber = GameManager.Instance.cat.GetComponent<Cat>().controllerNumber;
+		playerList [catControllerNumber].isCat = true;
 
         //Mouses
         foreach (GameObject g in GameManager.Instance.mouses)
         {
             Mouse mouseScript = g.GetComponent<Mouse>();
+
+			playerList [mouseScript.controllerNumber].isCat = false;
 
             mouseScript.OnSave += () => playerList[mouseScript.controllerNumber].saveCount++;
             mouseScript.OnCapture += () => playerList[mouseScript.controllerNumber].captureCount++;
@@ -55,6 +61,8 @@ public class StatsManager : MonoBehaviour
 [Serializable]
 public class playerStats
 {
+	public bool isCat;
+
     [Header("General")]
     public int score;
     public int win;
