@@ -111,7 +111,7 @@ public class Cat : MonoBehaviour
 
         //Poop
         if (rewiredPlayer.GetButtonDown("Action 2") && poopState == PoopState.CanPoop)
-            Poop();
+            StartCoroutine(Poop());
 
         LookForward ();
 
@@ -221,7 +221,7 @@ public class Cat : MonoBehaviour
 
     IEnumerator Poop()
     {
-        Instantiate(poopPrefab, transform.position, Quaternion.identity);
+        Instantiate(poopPrefab, new Vector3(transform.position.x, 0f, transform.position.z), Quaternion.identity);
         poopState = PoopState.Cooldown;
         yield return new WaitForSeconds(dashCooldown);
         poopState = PoopState.CanPoop;
