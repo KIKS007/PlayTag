@@ -41,8 +41,11 @@ public class StatsManager : MonoBehaviour
     {
         playerList.Clear();
 
-		for(int i = 0; i < GameManager.Instance.playersCount; i++)
+        for (int i = 0; i < GameManager.Instance.playersCount; i++)
+        {
             playerList.Add(new playerStats());
+            playerList[i].controllerNumber = i;
+        }
     }
 
     public void EventSubscriber()
@@ -73,6 +76,7 @@ public class playerStats
 	public bool isCat;
 
     [Header("General")]
+    public int controllerNumber;
     public int score;
     public int win;
     public int lose;
@@ -81,6 +85,7 @@ public class playerStats
     [Header("Mouse")]
     public float mouseDuration;
     public float frozenDuration;
+    public float unfrozenDuration;
     public int frozenCount;
     public int saveCount;
     public int captureCount;

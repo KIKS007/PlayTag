@@ -285,6 +285,7 @@ public class GameManager : MonoBehaviour
         foreach (Mouse mo in _mouses)
         {
             StatsManager.Instance.playerList[mo.controllerNumber].mouseDuration += timer - _timer;
+            StatsManager.Instance.playerList[mo.controllerNumber].frozenDuration += mo.frozenTime;
             if (mouse)
             {
                 StatsManager.Instance.playerList[mo.controllerNumber].win++;
