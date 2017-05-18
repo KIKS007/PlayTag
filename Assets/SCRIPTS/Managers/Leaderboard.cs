@@ -17,9 +17,20 @@ public class Leaderboard : MonoBehaviour {
     public int _bestScore = 0;
     private int _score;
     private int _scoreTemp;
+	private float _imagePos;
+	private float _pillarHeight;
+
+	void OnAwake () {
+		_imagePos = playerImage.anchoredPosition.y;
+		_pillarHeight = pillar.sizeDelta.y;
+	}
 
 	// Use this for initialization
 	void OnEnable () {
+
+		playerImage.anchoredPosition = new Vector2(playerImage.anchoredPosition.x ,_imagePos);
+		pillar.sizeDelta = new Vector2(pillar.sizeDelta.x, _pillarHeight);
+
         _score = StatsManager.Instance.playerList[transform.GetSiblingIndex()].score;
 
 		foreach(playerStats p in StatsManager.Instance.playerList)
@@ -34,10 +45,5 @@ public class Leaderboard : MonoBehaviour {
         playerImage.DOAnchorPosY( (_score * imageHeightMax) / _bestScore, duration).SetUpdate(true);
         pillar.DOSizeDelta(new Vector2(pillar.sizeDelta.x, (_score * pillarHeigthMax) / _bestScore), duration).SetUpdate(true);
         
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 }

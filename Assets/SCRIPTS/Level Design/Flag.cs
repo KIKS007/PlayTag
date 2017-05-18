@@ -27,13 +27,13 @@ public class Flag : Interrupter
 		if(mouseList.Count > requiredPlayers - 1 && !active)
         {
             _remainingTime -= Time.deltaTime * (1 + (multiplePlayerFactor * (mouseList.Count - 1)));
-            _rend.material.SetFloat("_angle", _remainingTime / timeToCaptureSolo);
+            _rend.material.SetFloat("_angle",  1 - _remainingTime / timeToCaptureSolo);
         }
 
         if(_remainingTime <= 0)
         {
             active = true;
-            _rend.material.color = Color.red;
+			_rend.material.color = Color.yellow;
 
             foreach(Mouse mo in mouseList)
             {

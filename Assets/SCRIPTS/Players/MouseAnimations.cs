@@ -14,19 +14,20 @@ public class MouseAnimations : MonoBehaviour
 	void Start () 
 	{
 		_mouseScript = GetComponent<Mouse> ();
-		_mouseAnimator = transform.GetComponentInChildren <Animator> ();
-		_attackFX = transform.GetComponentInChildren <ParticleSystem> ();
 
 		foreach (GameObject m in mousesMeshes)
 			m.SetActive (false);
 
-		for (int i = 0; i < GameManager.Instance.mouses.Count; i++)
+		for (int i = 0; i < mousesMeshes.Length; i++)
 		{
-			if (gameObject == GameManager.Instance.mouses [i])
+			if (i == _mouseScript.controllerNumber)
 				mousesMeshes [i].SetActive (true);
 			else
 				Destroy (mousesMeshes [i]);
 		}
+
+		_mouseAnimator = transform.GetComponentInChildren <Animator> ();
+		_attackFX = transform.GetComponentInChildren <ParticleSystem> ();
 
 		_mouseScript.OnAttack += () =>
 		{ 
