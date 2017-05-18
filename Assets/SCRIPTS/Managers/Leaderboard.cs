@@ -18,12 +18,14 @@ public class Leaderboard : MonoBehaviour {
     private int _score;
     private int _scoreTemp;
 
-	// Use this for initialization
-	void OnEnable () {
+    // Use this for initialization
+    void OnEnable () {
         _score = StatsManager.Instance.playerList[transform.GetSiblingIndex()].score;
 
 		foreach(playerStats p in StatsManager.Instance.playerList)
         {
+            p.unfrozenDuration = p.mouseDuration - p.frozenDuration;
+
             if(_bestScore < p.score)
             {
                 _bestScore = p.score;
@@ -40,4 +42,16 @@ public class Leaderboard : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    public void FeedHF(string t)
+    {
+        if (HF1Text.text == "")
+        {
+            HF1Text.text = t;
+        }
+        else if (HF2Text.text == "")
+        {
+            HF2Text.text = t;
+        }
+    }
 }

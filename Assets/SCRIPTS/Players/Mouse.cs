@@ -44,6 +44,9 @@ public class Mouse : MonoBehaviour
 	public float pushCooldown = 1f;
     public GameObject pushAOE;
 
+    [HideInInspector]
+    public float frozenTime = 0f;
+
     private List<GameObject> _triggered = new List<GameObject>();
 	private Rigidbody _rigidbody;
     private MeshRenderer _rend;
@@ -99,6 +102,10 @@ public class Mouse : MonoBehaviour
 			//Dash
 			if (rewiredPlayer.GetButtonDown("Action 1") && dashState == DashState.CanDash)
 				StartCoroutine(Dash());
+        }
+        else
+        {
+            frozenTime += Time.deltaTime;
         }
 	}
 
