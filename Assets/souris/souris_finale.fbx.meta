@@ -1,0 +1,429 @@
+fileFormatVersion: 2
+guid: 75e26635ca95d0d49bda575a8379d5fa
+timeCreated: 1495099394
+licenseType: Pro
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: arr
+    100002: Group11378
+    100004: head
+    100006: hips
+    100008: joint11
+    100010: joint13
+    100012: joint14
+    100014: locator1
+    100016: neack
+    100018: oreille_droite
+    100020: oreille_gauche
+    100022: patte_droite
+    100024: patte_droite 1
+    100026: patte_gauche
+    100028: patte_gauche 1
+    100030: queue
+    100032: //RootNode
+    400000: arr
+    400002: Group11378
+    400004: head
+    400006: hips
+    400008: joint11
+    400010: joint13
+    400012: joint14
+    400014: locator1
+    400016: neack
+    400018: oreille_droite
+    400020: oreille_gauche
+    400022: patte_droite
+    400024: patte_droite 1
+    400026: patte_gauche
+    400028: patte_gauche 1
+    400030: queue
+    400032: //RootNode
+    4300000: Group11378
+    7400000: iddlesouris
+    7400002: walksouris
+    7400004: sourisdash
+    7400006: attack
+    7400008: freeze
+    9500000: //RootNode
+    13700000: Group11378
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: iddlesouris
+      takeName: souris1
+      firstFrame: 0
+      lastFrame: 100
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Group11378
+        weight: 1
+      - path: locator1
+        weight: 1
+      - path: locator1/hips
+        weight: 1
+      - path: locator1/hips/arr
+        weight: 1
+      - path: locator1/hips/arr/patte_droite
+        weight: 1
+      - path: locator1/hips/arr/patte_gauche
+        weight: 1
+      - path: locator1/hips/arr/queue
+        weight: 1
+      - path: locator1/hips/arr/queue/joint13
+        weight: 1
+      - path: locator1/hips/arr/queue/joint13/joint14
+        weight: 1
+      - path: locator1/hips/joint11
+        weight: 1
+      - path: locator1/hips/neack
+        weight: 1
+      - path: locator1/hips/neack/head
+        weight: 1
+      - path: locator1/hips/neack/head/oreille_droite
+        weight: 1
+      - path: locator1/hips/neack/head/oreille_gauche
+        weight: 1
+      - path: locator1/hips/neack/patte_droite 1
+        weight: 1
+      - path: locator1/hips/neack/patte_gauche 1
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: walksouris
+      takeName: souris1
+      firstFrame: 110
+      lastFrame: 130
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Group11378
+        weight: 1
+      - path: locator1
+        weight: 1
+      - path: locator1/hips
+        weight: 1
+      - path: locator1/hips/arr
+        weight: 1
+      - path: locator1/hips/arr/patte_droite
+        weight: 1
+      - path: locator1/hips/arr/patte_gauche
+        weight: 1
+      - path: locator1/hips/arr/queue
+        weight: 1
+      - path: locator1/hips/arr/queue/joint13
+        weight: 1
+      - path: locator1/hips/arr/queue/joint13/joint14
+        weight: 1
+      - path: locator1/hips/joint11
+        weight: 1
+      - path: locator1/hips/neack
+        weight: 1
+      - path: locator1/hips/neack/head
+        weight: 1
+      - path: locator1/hips/neack/head/oreille_droite
+        weight: 1
+      - path: locator1/hips/neack/head/oreille_gauche
+        weight: 1
+      - path: locator1/hips/neack/patte_droite 1
+        weight: 1
+      - path: locator1/hips/neack/patte_gauche 1
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: sourisdash
+      takeName: souris1
+      firstFrame: 135
+      lastFrame: 152
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Group11378
+        weight: 1
+      - path: locator1
+        weight: 1
+      - path: locator1/hips
+        weight: 1
+      - path: locator1/hips/arr
+        weight: 1
+      - path: locator1/hips/arr/patte_droite
+        weight: 1
+      - path: locator1/hips/arr/patte_gauche
+        weight: 1
+      - path: locator1/hips/arr/queue
+        weight: 1
+      - path: locator1/hips/arr/queue/joint13
+        weight: 1
+      - path: locator1/hips/arr/queue/joint13/joint14
+        weight: 1
+      - path: locator1/hips/joint11
+        weight: 1
+      - path: locator1/hips/neack
+        weight: 1
+      - path: locator1/hips/neack/head
+        weight: 1
+      - path: locator1/hips/neack/head/oreille_droite
+        weight: 1
+      - path: locator1/hips/neack/head/oreille_gauche
+        weight: 1
+      - path: locator1/hips/neack/patte_droite 1
+        weight: 1
+      - path: locator1/hips/neack/patte_gauche 1
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: attack
+      takeName: souris1
+      firstFrame: 155
+      lastFrame: 170
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Group11378
+        weight: 1
+      - path: locator1
+        weight: 1
+      - path: locator1/hips
+        weight: 1
+      - path: locator1/hips/arr
+        weight: 1
+      - path: locator1/hips/arr/patte_droite
+        weight: 1
+      - path: locator1/hips/arr/patte_gauche
+        weight: 1
+      - path: locator1/hips/arr/queue
+        weight: 1
+      - path: locator1/hips/arr/queue/joint13
+        weight: 1
+      - path: locator1/hips/arr/queue/joint13/joint14
+        weight: 1
+      - path: locator1/hips/joint11
+        weight: 1
+      - path: locator1/hips/neack
+        weight: 1
+      - path: locator1/hips/neack/head
+        weight: 1
+      - path: locator1/hips/neack/head/oreille_droite
+        weight: 1
+      - path: locator1/hips/neack/head/oreille_gauche
+        weight: 1
+      - path: locator1/hips/neack/patte_droite 1
+        weight: 1
+      - path: locator1/hips/neack/patte_gauche 1
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: freeze
+      takeName: souris1
+      firstFrame: 175
+      lastFrame: 225
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Group11378
+        weight: 1
+      - path: locator1
+        weight: 1
+      - path: locator1/hips
+        weight: 1
+      - path: locator1/hips/arr
+        weight: 1
+      - path: locator1/hips/arr/patte_droite
+        weight: 1
+      - path: locator1/hips/arr/patte_gauche
+        weight: 1
+      - path: locator1/hips/arr/queue
+        weight: 1
+      - path: locator1/hips/arr/queue/joint13
+        weight: 1
+      - path: locator1/hips/arr/queue/joint13/joint14
+        weight: 1
+      - path: locator1/hips/joint11
+        weight: 1
+      - path: locator1/hips/neack
+        weight: 1
+      - path: locator1/hips/neack/head
+        weight: 1
+      - path: locator1/hips/neack/head/oreille_droite
+        weight: 1
+      - path: locator1/hips/neack/head/oreille_gauche
+        weight: 1
+      - path: locator1/hips/neack/patte_droite 1
+        weight: 1
+      - path: locator1/hips/neack/patte_gauche 1
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 10
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
