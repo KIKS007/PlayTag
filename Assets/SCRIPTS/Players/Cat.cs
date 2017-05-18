@@ -19,6 +19,12 @@ public enum DashState
 	Cooldown
 }
 
+public enum PoopState
+{
+    CanPoop,
+    Cooldown
+}
+
 public class Cat : MonoBehaviour 
 {
 	[Header("Controller Number")]
@@ -28,6 +34,7 @@ public class Cat : MonoBehaviour
 	[Header("States")]
 	public CatState catstate = CatState.Normal;
 	public DashState dashState = DashState.CanDash;
+    public PoopState poopState = PoopState.CanPoop;
 
 	[Header("Movement")]
 	public float speed = 18;
@@ -47,6 +54,10 @@ public class Cat : MonoBehaviour
 	public float timeToMaxDuration;
 	public float timeReductionFactor = 0.7f;
 	public float dashCooldown = 1f;
+
+    [Header("Poop")]
+    public GameObject poopPrefab;
+    public float poopCooldown = 3f;
 
 	[Header("Dash Target")]
 	public LayerMask wallMask = 1 << 10;
@@ -97,8 +108,12 @@ public class Cat : MonoBehaviour
 		//Dash
 		if (rewiredPlayer.GetButtonDown("Action 1") && dashState == DashState.CanDash && catstate != CatState.Stunned)
 			StartCoroutine(DashAim());
-		
-		LookForward ();
+
+        //Poop
+        if (rewiredPlayer.GetButtonDown("Action 2") && poopState == PoopState.CanPoop)
+            Poop();
+
+        LookForward ();
 
 		if(_previousMovement != _movement)
 		{
@@ -203,6 +218,14 @@ public class Cat : MonoBehaviour
 
 		StartCoroutine (Dash ());
 	}
+
+    IEnumerator Poop()
+    {
+        Instantiate(poopPrefab, transform.position, Quaternion.identity);
+        poopState = PoopState.Cooldown;
+        yield return new WaitForSeconds(dashCooldown);
+        poopState = PoopState.CanPoop;
+    }
 
 	protected virtual IEnumerator Dash ()
 	{
