@@ -41,21 +41,16 @@ public class Leaderboard : MonoBehaviour
             });
         
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     public void FeedHF(string t)
     {
         if (HF1Text.text == "")
         {
-            HF1Text.text = t;
+            HF1Text.DOText(t, 1f);
         }
         else if (HF2Text.text == "")
         {
-            HF2Text.text = t;
+            HF2Text.DOText(t, 1f);
         }
     }
 }

@@ -17,10 +17,15 @@ public class ActiveBoard : MonoBehaviour {
             transform.GetChild(i).gameObject.SetActive(true);
             _leaderboardList.Add(transform.GetChild(i).GetComponent<Leaderboard>());
         }
+        StartCoroutine(delayedHF());
+	}
 
+    IEnumerator delayedHF()
+    {
+        yield return new WaitForSeconds(1f);
         _playerList.AddRange(StatsManager.Instance.playerList);
         HF();
-	}
+    }
 
     public void HF()
     {
