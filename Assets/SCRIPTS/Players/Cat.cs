@@ -81,6 +81,7 @@ public class Cat : MonoBehaviour
 	public event EventHandler OnMoving;
 	public event EventHandler OnStopMoving;
 	public event EventHandler OnStunned;
+	public event EventHandler OnStunnedEnd;
 	public event EventHandler OnHit;
 
     void Start () 
@@ -301,7 +302,10 @@ public class Cat : MonoBehaviour
 
 		if (OnMoving != null)
 			OnMoving ();
-		
+
+		if (OnStunnedEnd != null)
+			OnStunnedEnd ();
+
 		GetComponent<Renderer> ().material.color = initialColor;
 
 		dashState = DashState.CanDash;

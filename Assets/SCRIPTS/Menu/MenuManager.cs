@@ -104,7 +104,7 @@ public class MenuManager : Singleton<MenuManager>
 					eventSystem.SetSelectedGameObject (null);
 					eventSystem.SetSelectedGameObject (pauseMenu.GetComponent<MenuComponent> ().selectable);
 
-				}).SetUpdate (true);
+				}).SetUpdate (true).SetId ("Menu");
 			
 		}
 		
@@ -120,7 +120,7 @@ public class MenuManager : Singleton<MenuManager>
 					currentMenu = null;
 					GameManager.Instance.gameState = GameState.Playing;
 
-				}).SetUpdate (true);
+				}).SetUpdate (true).SetId ("Menu");
 		}
 	}
 
@@ -169,6 +169,9 @@ public class MenuManager : Singleton<MenuManager>
 
 	public void ShowMenu (MenuComponent targetMenu, bool back = true)
 	{
+		if (DOTween.IsTweening ("Menu"))
+			return;
+
 		if(currentMenu != null)
 		{
 			MenuComponent previousMenu = currentMenu;
@@ -195,7 +198,7 @@ public class MenuManager : Singleton<MenuManager>
 					else if(targetMenu.selectable != null)
 						eventSystem.SetSelectedGameObject (targetMenu.selectable);
 					
-				}).SetUpdate (true);
+				}).SetUpdate (true).SetId ("Menu");
 		}
 		else
 		{
@@ -212,7 +215,7 @@ public class MenuManager : Singleton<MenuManager>
 					else if(targetMenu.selectable != null)
 						eventSystem.SetSelectedGameObject (targetMenu.selectable);
 					
-				}).SetUpdate (true);
+				}).SetUpdate (true).SetId ("Menu");
 		}
 
 		if(targetMenu == mainMenu)
@@ -226,6 +229,9 @@ public class MenuManager : Singleton<MenuManager>
 
 	public void Hide (MenuComponent targetMenu)
 	{
+		if (DOTween.IsTweening ("Menu"))
+			return;
+		
 		targetMenu._previousSelection = eventSystem.currentSelectedGameObject;
 
 		targetMenu._rect.DOAnchorPos (offScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=>
@@ -233,7 +239,7 @@ public class MenuManager : Singleton<MenuManager>
 				targetMenu.gameObject.SetActive (false);
 				eventSystem.SetSelectedGameObject (null);
 				currentMenu = null;
-			}).SetUpdate (true);
+			}).SetUpdate (true).SetId ("Menu");
 	}
 
 	public IEnumerator EndMenu (bool cat)
