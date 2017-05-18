@@ -56,7 +56,8 @@ public class GameManager : MonoBehaviour
     private float _timer;
 	[HideInInspector]
 	public Cat _cat;
-	private Transform _playersParent;
+	[HideInInspector]
+	public Transform _playersParent;
 	private int _timerSoundCount = 4;
 
     public static GameManager Instance;

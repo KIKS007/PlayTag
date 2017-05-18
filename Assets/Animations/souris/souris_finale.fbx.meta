@@ -45,6 +45,7 @@ ModelImporter:
     7400004: sourisdash
     7400006: attack
     7400008: freeze
+    7400010: freeze2
     9500000: //RootNode
     13700000: Group11378
   materials:
@@ -322,7 +323,7 @@ ModelImporter:
       name: freeze
       takeName: souris1
       firstFrame: 175
-      lastFrame: 225
+      lastFrame: 200
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -331,6 +332,68 @@ ModelImporter:
       hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Group11378
+        weight: 1
+      - path: locator1
+        weight: 1
+      - path: locator1/hips
+        weight: 1
+      - path: locator1/hips/arr
+        weight: 1
+      - path: locator1/hips/arr/patte_droite
+        weight: 1
+      - path: locator1/hips/arr/patte_gauche
+        weight: 1
+      - path: locator1/hips/arr/queue
+        weight: 1
+      - path: locator1/hips/arr/queue/joint13
+        weight: 1
+      - path: locator1/hips/arr/queue/joint13/joint14
+        weight: 1
+      - path: locator1/hips/joint11
+        weight: 1
+      - path: locator1/hips/neack
+        weight: 1
+      - path: locator1/hips/neack/head
+        weight: 1
+      - path: locator1/hips/neack/head/oreille_droite
+        weight: 1
+      - path: locator1/hips/neack/head/oreille_gauche
+        weight: 1
+      - path: locator1/hips/neack/patte_droite 1
+        weight: 1
+      - path: locator1/hips/neack/patte_gauche 1
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: freeze2
+      takeName: souris1
+      firstFrame: 203
+      lastFrame: 225
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 1.47
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0

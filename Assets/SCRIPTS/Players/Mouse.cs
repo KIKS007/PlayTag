@@ -55,14 +55,20 @@ public class Mouse : MonoBehaviour
 	public Vector3 _movement;
     public float speedBoost;
 
+	private Vector3 _previousMovement;
+	private MouseState _previousMouseState;
+
 	public event EventHandler OnAttack;
 	public event EventHandler OnFrozen;
     public event EventHandler OnUnfrozen;
     public event EventHandler OnSave;
     public event EventHandler OnCapture;
 	public event EventHandler OnStun;
-    public event EventHandler OnDash;
-    
+	public event EventHandler OnDash;
+    public event EventHandler OnDashEnd;
+	public event EventHandler OnMoving;
+	public event EventHandler OnStopMoving;
+
     void Start () 
 	{
 		_rigidbody = GetComponent<Rigidbody> ();
@@ -100,6 +106,23 @@ public class Mouse : MonoBehaviour
 			if (rewiredPlayer.GetButtonDown("Action 1") && dashState == DashState.CanDash)
 				StartCoroutine(Dash());
         }
+
+		if(_previousMovement != _movement)
+		{
+			if(_previousMovement == Vector3.zero && _movement != Vector3.zero && mouseState != MouseState.Frozen)
+			{
+				if (OnMoving != null)
+					OnMoving ();
+			}
+			if(_previousMovement != Vector3.zero && _movement == Vector3.zero || mouseState == MouseState.Frozen && _previousMouseState != MouseState.Frozen)
+			{
+				if (OnStopMoving != null)
+					OnStopMoving ();
+			}
+		}
+
+		_previousMouseState = mouseState;
+		_previousMovement = _movement;
 	}
 
 	void FixedUpdate ()
@@ -176,6 +199,9 @@ public class Mouse : MonoBehaviour
 		}
 
 		dashState = DashState.Cooldown;
+
+		if (OnDashEnd != null)
+			OnDashEnd ();
 
 		yield return new WaitForSeconds (dashCooldown);
 
