@@ -41,7 +41,7 @@ public class StatsManager : MonoBehaviour
     {
         playerList.Clear();
 
-		for(int i = 0; i < ReInput.controllers.joystickCount; i++)
+		for(int i = 0; i < GameManager.Instance.playersCount; i++)
             playerList.Add(new playerStats());
     }
 

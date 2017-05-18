@@ -54,19 +54,49 @@ public class MenuPlayerSelection : MonoBehaviour
 				CheckCanPlay ();
 			}
 		}
+
+		if(ReInput.controllers.joystickCount < 2)
+		{
+			playersIcon [1].SetActive (true);
+			playersReady [1].SetActive (true);
+
+			if(ReInput.controllers.joystickCount < 1)
+			{
+				playersIcon [0].SetActive (true);
+				playersReady [0].SetActive (true);
+			}
+
+			CheckCanPlay ();
+		}
 	}
 
 	bool CheckCanPlay ()
 	{
 		bool canPlay = true;
 
-		for (int i = 0; i < ReInput.controllers.joystickCount; i++)
-			if(i < 4)
-			if (!playersReady [i].activeSelf)
-				canPlay = false;
-		
-		if (ReInput.controllers.joystickCount < 2)
-			canPlay = false;
+		if(ReInput.controllers.joystickCount == 1)
+		{
+			if(playersReady [0].activeSelf)
+				GameManager.Instance.playersCount = 2;
+
+		}
+		else if (ReInput.controllers.joystickCount == 0)
+		{
+			GameManager.Instance.playersCount = 2;
+		}
+		else
+		{
+			GameManager.Instance.playersCount = ReInput.controllers.joystickCount;
+
+			for (int i = 0; i < ReInput.controllers.joystickCount; i++)
+			{
+				if(i < 4)
+				{
+					if (!playersReady [i].activeSelf)
+						canPlay = false;
+				}
+			}
+		}
 
 		if (canPlay)
 		{

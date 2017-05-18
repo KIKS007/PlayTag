@@ -66,7 +66,6 @@ public class Cat : MonoBehaviour
 	[Header("Dash Line Renderer")]
 	public LineRenderer dashLineRenderer;
 
-
     [HideInInspector]
     public float speedBoost;
 
@@ -78,6 +77,7 @@ public class Cat : MonoBehaviour
 
 	public event EventHandler OnDash;
 	public event EventHandler OnDashAiming;
+	public event EventHandler OnDashEnd;
 	public event EventHandler OnMoving;
 	public event EventHandler OnStopMoving;
 	public event EventHandler OnStunned;
@@ -155,7 +155,7 @@ public class Cat : MonoBehaviour
 
 		//Movement
 		if (dashState != DashState.Dashing && dashState != DashState.DashEnd && dashState != DashState.DashAim)
-			_rigidbody.MovePosition(_rigidbody.position + _movement * speed * Time.fixedDeltaTime);
+			_rigidbody.MovePosition (_rigidbody.position + _movement * (speed + speedBoost) * Time.fixedDeltaTime);
 
 		if (dashState == DashState.DashAim)
 			_rigidbody.MovePosition(_rigidbody.position + _movement * aimingSpeed * Time.fixedDeltaTime);
@@ -205,7 +205,7 @@ public class Cat : MonoBehaviour
 			else
 				dashTarget.position = positionTemp;
 
-			dashLineRenderer.SetPosition (0, transform.position);
+			dashLineRenderer.SetPosition (0, new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z) - transform.forward * 0.3f);
 			dashLineRenderer.SetPosition (1, dashTarget.position);
 
 			yield return new WaitForEndOfFrame ();
@@ -256,11 +256,14 @@ public class Cat : MonoBehaviour
 
 			//if (Vector3.Distance (transform.position, dashTargetTemp) > 0.5f)
 				
-				_rigidbody.velocity = movementTemp * _dashSpeedTemp;
+			_rigidbody.velocity = movementTemp * _dashSpeedTemp;
 			yield return new WaitForFixedUpdate();
 		}
 
 		_rigidbody.velocity = Vector3.zero;
+
+		if (OnDashEnd != null)
+			OnDashEnd ();
 
 		yield return new WaitForSeconds(dashCooldown);
 
@@ -287,6 +290,9 @@ public class Cat : MonoBehaviour
 
 		yield return new WaitForSeconds (stunDuration);
 
+		if (OnMoving != null)
+			OnMoving ();
+		
 		GetComponent<Renderer> ().material.color = initialColor;
 
 		dashState = DashState.CanDash;

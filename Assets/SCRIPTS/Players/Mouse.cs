@@ -117,7 +117,7 @@ public class Mouse : MonoBehaviour
 	void Movement ()
 	{
 		//Movement
-		_rigidbody.MovePosition(_rigidbody.position + _movement * speed * Time.fixedDeltaTime);
+		_rigidbody.MovePosition (_rigidbody.position + _movement * (speed + speedBoost) * Time.fixedDeltaTime);
 	}
 
 	void LookForward ()

@@ -10,7 +10,6 @@ public class Flag : Interrupter
     public int requiredPlayers = 1;
     
     private float _remainingTime;
-    [HideInInspector]
     public List<Mouse> mouseList;
 
 	protected override void Start () {
