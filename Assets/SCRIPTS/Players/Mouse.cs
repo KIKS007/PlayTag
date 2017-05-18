@@ -36,6 +36,7 @@ public class Mouse : MonoBehaviour
 
 	[Header("Movement")]
 	public float speed = 16;
+	public float gravity = 10;
 
 	[Header("Push")]
 	public float pushDuration = 0.5f;
@@ -43,20 +44,25 @@ public class Mouse : MonoBehaviour
 	public float pushCooldown = 1f;
     public GameObject pushAOE;
 
-	[Header("Wrap")]
-	public float xWidth;
-	public float yWidth;
-
     private List<GameObject> _triggered = new List<GameObject>();
 	private Rigidbody _rigidbody;
     private MeshRenderer _rend;
     private Color _tempColor = new Color();
 	private float _dashSpeedTemp;
+    private Flag _flag;
 
 	[HideInInspector]
 	public Vector3 _movement;
 
-	void Start () 
+	public event EventHandler OnAttack;
+	public event EventHandler OnFrozen;
+    public event EventHandler OnUnfrozen;
+    public event EventHandler OnSave;
+    public event EventHandler OnCapture;
+	public event EventHandler OnStun;
+    public event EventHandler OnDash;
+    
+    void Start () 
 	{
 		_rigidbody = GetComponent<Rigidbody> ();
         _rend = GetComponent<MeshRenderer>();
@@ -71,6 +77,9 @@ public class Mouse : MonoBehaviour
 	
 	void Update () 
 	{
+		if (GameManager.Instance.gameState != GameState.Playing)
+			return;
+
         if (mouseState == MouseState.Normal)
         {
             //Movement Vector
@@ -91,7 +100,17 @@ public class Mouse : MonoBehaviour
 
 	void FixedUpdate ()
 	{
+		if (GameManager.Instance.gameState != GameState.Playing)
+			return;
+		
 		Movement ();
+
+		Gravity ();
+	}
+
+	void Gravity ()
+	{
+		_rigidbody.AddForce (Vector3.down * gravity, ForceMode.Acceleration);
 	}
 
 	void Movement ()
@@ -108,6 +127,9 @@ public class Mouse : MonoBehaviour
 
 	void Push ()
 	{
+		if (OnAttack != null)
+			OnAttack();
+
 		pushState = PushState.Pushing;
         _triggered.Clear();
         pushAOE.SetActive(true);
@@ -133,6 +155,9 @@ public class Mouse : MonoBehaviour
 	protected virtual IEnumerator Dash()
 	{
 		dashState = DashState.Dashing;
+
+		if (OnDash != null)
+			OnDash();
 
 		_dashSpeedTemp = dashSpeed;
 
@@ -170,7 +195,7 @@ public class Mouse : MonoBehaviour
         }
 
         //movable
-        if (col.gameObject.layer == 8)
+        if (col.gameObject.layer == LayerMask.NameToLayer("Movable") || col.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             Rigidbody rb = col.GetComponent<Rigidbody>();
             rb.AddForce((rb.position - transform.position).normalized * pushForce, ForceMode.Impulse);
@@ -181,10 +206,25 @@ public class Mouse : MonoBehaviour
 		{
 			if (col.GetComponent<Cat> ().catstate == CatState.Stunned)
 				return;
-			
-			Rigidbody rb = col.GetComponent<Rigidbody>();
-            rb.AddForce((rb.position - transform.position).normalized * pushForce, ForceMode.Impulse);
             col.GetComponent<Cat>().StartCoroutine("Stun");
+
+            if (OnStun != null)
+                OnStun();
+        }
+
+        //flag
+        if(col.tag == "Flag")
+        {
+            _flag = col.GetComponent<Flag>();
+        }
+    }
+
+    void OnTriggerExit(Collider col)
+    {
+        //flag
+        if (col.tag == "Flag")
+        {
+            _flag = null;
         }
     }
 
@@ -192,10 +232,21 @@ public class Mouse : MonoBehaviour
     {
         if(col.gameObject.tag == "Cat")
         {
+
 			if (mouseState == MouseState.Normal && col.gameObject.GetComponent<Cat> ().catstate != CatState.Stunned)
             {
                 mouseState = MouseState.Frozen;
                 _movement = Vector3.zero;
+
+				col.gameObject.GetComponent<Cat>().OnHitVoid ();
+
+                if (OnFrozen != null)
+                    OnFrozen();
+
+                if(_flag != null)
+                {
+                    _flag.mouseList.Remove(this);
+                }
 
                 //frozen color change
                 _tempColor = _rend.material.color;
@@ -209,10 +260,28 @@ public class Mouse : MonoBehaviour
         {
             if (mouseState == MouseState.Frozen)
             {
+                col.gameObject.GetComponent<Mouse>().OnSaveVoid();
+
                 _rend.material.color = _tempColor;
+
+				if (OnUnfrozen != null)
+					OnUnfrozen ();
 
                 mouseState = MouseState.Normal;
             }
         }
+
+    }
+
+    public void OnSaveVoid ()
+    {
+        if (OnSave != null)
+            OnSave();
+    }
+
+    public void OnCaptureVoid()
+    {
+        if (OnCapture != null)
+            OnCapture();
     }
 }

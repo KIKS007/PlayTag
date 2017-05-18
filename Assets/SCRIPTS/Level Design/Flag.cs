@@ -7,9 +7,10 @@ public class Flag : Interrupter
 
     public float timeToCaptureSolo = 5.0f;
     public float multiplePlayerFactor = 0.3f;
-
-    private int players = 0;
+    
     private float _remainingTime;
+    [HideInInspector]
+    public List<Mouse> mouseList;
 
 	protected override void Start () {
         _remainingTime = timeToCaptureSolo;
@@ -17,10 +18,14 @@ public class Flag : Interrupter
 	}
 	
 
-	void Update () {
-		if(players > 0 && !active)
+	void Update () 
+	{
+		if (active)
+			return;
+		
+		if(mouseList.Count > 0 && !active)
         {
-            _remainingTime -= Time.deltaTime * (1 + (multiplePlayerFactor * players));
+            _remainingTime -= Time.deltaTime * (1 + (multiplePlayerFactor * (mouseList.Count - 1)));
             _rend.material.color = new Color((1f - (_remainingTime / timeToCaptureSolo) / 2f), _rend.material.color.g, _rend.material.color.b);
         }
 
@@ -28,6 +33,12 @@ public class Flag : Interrupter
         {
             active = true;
             _rend.material.color = Color.red;
+
+            foreach(Mouse mo in mouseList)
+            {
+                mo.OnCaptureVoid();
+            }
+
             GameManager.Instance.CheckButton();
         }
 	}
@@ -35,22 +46,31 @@ public class Flag : Interrupter
     //Trigger
     public void OnTriggerEnter(Collider col)
     {
-        if(col.tag == "Mouse")
+		if (active)
+			return;
+
+		if(col.tag == "Mouse")
         {
-            players++;
+            Mouse mo = col.GetComponent<Mouse>();
+            if (mo.mouseState == MouseState.Normal)
+            {
+                mouseList.Add(mo);
+            }
         }
     }
 
     public void OnTriggerExit(Collider col)
     {
-        if(col.tag == "Mouse")
-        {
-            players--;
-        }
-    }
+		if (active)
+			return;
 
-    public override void Activate()
-    {
-        
+		if(col.tag == "Mouse")
+        {
+            Mouse mo = col.GetComponent<Mouse>();
+            if (mo.mouseState == MouseState.Normal)
+            {
+                mouseList.Remove(mo);
+            }
+        }
     }
 }
