@@ -33,7 +33,7 @@ public class Flag : Interrupter
         if(_remainingTime <= 0)
         {
             active = true;
-			_rend.material.color = Color.yellow;
+			_rend.material.color = Color.green;
 
             foreach(Mouse mo in mouseList)
             {
