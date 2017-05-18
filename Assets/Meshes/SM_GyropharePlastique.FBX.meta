@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: cc097b6fcbee8ce4693f21ab3e726e96
-timeCreated: 1494946211
+guid: 98145a2a5c26acb4fad1daf171a9243c
+timeCreated: 1495068004
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
@@ -9,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: 1rPasse
+    4300000: GyropharePlastic
   materials:
     importMaterials: 1
     materialName: 0

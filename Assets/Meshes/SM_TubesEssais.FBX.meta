@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 6aef1be7cbac2fb4e893dcd53d416489
-timeCreated: 1494946210
+guid: 32b7632722d485e48a57bd6629207752
+timeCreated: 1495068003
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
@@ -9,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: 2ePasse
+    4300000: TubesEssais
   materials:
     importMaterials: 1
     materialName: 0
