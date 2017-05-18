@@ -82,7 +82,7 @@ public class MenuPlayerSelection : MonoBehaviour
 		}
 		else if (ReInput.controllers.joystickCount == 0)
 		{
-			//
+			GameManager.Instance.playersCount = 2;
 		}
 		else
 		{
