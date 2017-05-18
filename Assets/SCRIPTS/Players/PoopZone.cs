@@ -27,7 +27,9 @@ public class PoopZone : MonoBehaviour {
         {
             if (mouseSpeedModifier != 0f && col.tag == "Mouse")
             {
-                col.GetComponent<Mouse>().speedBoost = mouseSpeedModifier;
+                Mouse m = col.GetComponent<Mouse>();
+                m.speedBoost = mouseSpeedModifier;
+                m.dashState = DashState.Cooldown;
             }
             else if (catSpeedModifier != 0f)
             {
@@ -42,7 +44,9 @@ public class PoopZone : MonoBehaviour {
         {
             if (mouseSpeedModifier != 0f && col.tag == "Mouse")
             {
-                col.GetComponent<Mouse>().speedBoost = 0f;
+                Mouse m = col.GetComponent<Mouse>();
+                m.speedBoost = 0;
+                m.dashState = DashState.CanDash;
             }
             else if (catSpeedModifier != 0f)
             {
