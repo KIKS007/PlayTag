@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpeedZone : MonoBehaviour {
+public class SpeedZone : MonoBehaviour
+{
 
     public float speedModifier;
 
     void OnTriggerEnter(Collider col)
     {
-        if(speedModifier != 0f && col.gameObject.layer == LayerMask.NameToLayer("Player"))
+        if (speedModifier != 0f && col.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             if (col.tag == "Mouse")
                 col.GetComponent<Mouse>().speedBoost = speedModifier;
