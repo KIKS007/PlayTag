@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: c88c0add91481764c8007eee26522264
-timeCreated: 1495056049
+guid: 32b7632722d485e48a57bd6629207752
+timeCreated: 1495068003
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
@@ -9,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Carnet
+    4300000: TubesEssais
   materials:
     importMaterials: 1
     materialName: 0
