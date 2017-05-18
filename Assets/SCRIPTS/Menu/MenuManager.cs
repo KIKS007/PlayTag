@@ -35,6 +35,7 @@ public class MenuManager : Singleton<MenuManager>
 	public MenuComponent currentMenu;
 
 	public Player _rewiredPlayer1;
+	public Player _rewiredSystem;
 
 	public event EventHandler OnMainMenu;
 
@@ -45,6 +46,7 @@ public class MenuManager : Singleton<MenuManager>
 
 		//Dont forget to put keyboard on 1st player
 		_rewiredPlayer1 = ReInput.players.GetPlayer(0);
+		_rewiredSystem = ReInput.players.GetSystemPlayer ();
 
 		HideAll ();
 
@@ -56,7 +58,7 @@ public class MenuManager : Singleton<MenuManager>
 	{
 		BackInput ();
 
-		if (_rewiredPlayer1.GetButtonDown ("Pause"))
+		if (_rewiredPlayer1.GetButtonDown ("Pause") || _rewiredSystem.GetButtonDown ("Back"))
 			Pause ();
 
 		NothingSelected ();
@@ -75,10 +77,13 @@ public class MenuManager : Singleton<MenuManager>
 	{
 		if(GameManager.Instance.gameState == GameState.Menu)
 		{
-			if (_rewiredPlayer1.GetButtonDown ("Back") && currentMenu != null && currentMenu.previousMenu != null)
+			if(_rewiredPlayer1.GetButtonDown ("Back") || _rewiredSystem.GetButtonDown ("Back"))
 			{
-				SoundsManager.Instance.PlaySound (SoundsManager.Instance.buttonCancel);
-				ShowMenu (currentMenu.previousMenu, false);
+				if (currentMenu != null && currentMenu.previousMenu != null)
+				{
+					SoundsManager.Instance.PlaySound (SoundsManager.Instance.buttonCancel);
+					ShowMenu (currentMenu.previousMenu, false);
+				}
 			}
 		}
 	}
