@@ -86,6 +86,8 @@ public class MenuPlayerSelection : MonoBehaviour
 		}
 		else
 		{
+			GameManager.Instance.playersCount = ReInput.controllers.joystickCount;
+
 			for (int i = 0; i < ReInput.controllers.joystickCount; i++)
 			{
 				if(i < 4)
