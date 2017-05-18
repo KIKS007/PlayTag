@@ -55,7 +55,6 @@ public class Cat : MonoBehaviour
 	[Header("Dash Line Renderer")]
 	public LineRenderer dashLineRenderer;
 
-
     [HideInInspector]
     public float speedBoost;
 
@@ -141,7 +140,7 @@ public class Cat : MonoBehaviour
 
 		//Movement
 		if (dashState != DashState.Dashing && dashState != DashState.DashEnd && dashState != DashState.DashAim)
-			_rigidbody.MovePosition(_rigidbody.position + _movement * speed * Time.fixedDeltaTime);
+			_rigidbody.MovePosition (_rigidbody.position + _movement * (speed + speedBoost) * Time.fixedDeltaTime);
 
 		if (dashState == DashState.DashAim)
 			_rigidbody.MovePosition(_rigidbody.position + _movement * aimingSpeed * Time.fixedDeltaTime);
