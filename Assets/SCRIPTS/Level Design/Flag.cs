@@ -52,10 +52,16 @@ public class Flag : Interrupter
 		if(col.tag == "Mouse")
         {
             Mouse mo = col.GetComponent<Mouse>();
+
             if (mo.mouseState == MouseState.Normal)
             {
                 mouseList.Add(mo);
             }
+			else
+			{
+				mouseList.Contains (mo);
+				mouseList.Remove (mo);
+			}
         }
     }
 

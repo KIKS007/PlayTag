@@ -107,7 +107,8 @@ public class Mouse : MonoBehaviour
 		if (GameManager.Instance.gameState != GameState.Playing)
 			return;
 		
-		Movement ();
+		if (mouseState == MouseState.Normal)
+			Movement ();
 
 		Gravity ();
 	}
