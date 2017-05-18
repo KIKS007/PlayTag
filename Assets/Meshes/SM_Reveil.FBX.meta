@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 0f20d16562a7c0d4caee7d5b2346a023
-timeCreated: 1495025841
+guid: 5305306c864a4a14382c27a1d1a3079b
+timeCreated: 1495105708
 licenseType: Pro
 ModelImporter:
   serializedVersion: 19
@@ -15,8 +15,8 @@ ModelImporter:
     2300002: Plane001
     3300000: Box009
     3300002: Plane001
-    4300000: Box009
-    4300002: Plane001
+    4300000: Plane001
+    4300002: Box009
   materials:
     importMaterials: 1
     materialName: 0
