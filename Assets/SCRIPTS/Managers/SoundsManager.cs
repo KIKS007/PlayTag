@@ -51,6 +51,7 @@ public class SoundsManager : Singleton<SoundsManager>
 	[SoundGroup]
 	public string portal;
 
+	public PlaylistController playlistController;
 
 	// Use this for initialization
 	void Start () 
@@ -60,9 +61,9 @@ public class SoundsManager : Singleton<SoundsManager>
 		GameManager.Instance.OnVictory += () => MasterAudio.StopAllOfSound (catWalking);
 
 		//Music
-		MenuManager.Instance.OnMainMenu += () => MasterAudio.StartPlaylist ("Menu");
-		TournamentManager.Instance.OnEndMode += () => MasterAudio.StartPlaylist ("Score");
-		TournamentManager.Instance.OnStartGame += () => MasterAudio.StartPlaylist ("Game");
+		MenuManager.Instance.OnMainMenu += () =>  { if(playlistController.CurrentPlaylist.playlistName != "Menu") MasterAudio.StartPlaylist ("Menu"); };
+		TournamentManager.Instance.OnEndMode += () =>  { if(playlistController.CurrentPlaylist.playlistName != "Menu") MasterAudio.StartPlaylist ("Score"); };
+		TournamentManager.Instance.OnStartGame += () =>  { if(playlistController.CurrentPlaylist.playlistName != "Menu") MasterAudio.StartPlaylist ("Game"); };
 	}
 
 	void Subscribe ()

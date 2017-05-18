@@ -16,6 +16,9 @@ public class CatAnimations : MonoBehaviour
 		_catScript.OnDashAiming += () => _catAnimator.SetTrigger ("aiming");
 		_catScript.OnDash += () => _catAnimator.SetTrigger ("dash");
 		_catScript.OnDashEnd += () => _catAnimator.SetTrigger ("dashEnd");
+		_catScript.OnStopMoving += () => _catAnimator.SetTrigger ("dashEnd");
+		_catScript.OnStunned += () => _catAnimator.SetTrigger ("dashEnd");
+
 		_catScript.OnMoving += () => _catAnimator.SetBool ("walking", true);
 		_catScript.OnStopMoving += () => _catAnimator.SetBool ("walking", false);
 	}
