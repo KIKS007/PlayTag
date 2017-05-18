@@ -221,9 +221,12 @@ public class Cat : MonoBehaviour
 
     IEnumerator Poop()
     {
-        Instantiate(poopPrefab, new Vector3(transform.position.x, 0f, transform.position.z), Quaternion.identity);
         poopState = PoopState.Cooldown;
-        yield return new WaitForSeconds(dashCooldown);
+
+        GameObject poop = Instantiate(poopPrefab, TournamentManager.Instance.playersParent.transform);
+        poop.transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
+        yield return new WaitForSeconds(poopCooldown);
+
         poopState = PoopState.CanPoop;
     }
 

@@ -9,6 +9,7 @@ public class TournamentManager : MonoBehaviour
 	[HideInInspector]
     public int roundCount;
 	public List<string> levelPool = new List<string>();
+    public GameObject playersParent;
 	private int _currentRound;
 	private List<string> _levelPool = new List<string>();
     private string _currentScene;
@@ -115,6 +116,8 @@ public class TournamentManager : MonoBehaviour
         {
             GameManager.Instance.spawns.Add(go.transform);
         }
+
+        playersParent = GameObject.Find("PlayersParent");
 
 		GameManager.Instance.Setup ();
 

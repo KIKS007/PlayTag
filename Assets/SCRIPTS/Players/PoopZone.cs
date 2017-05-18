@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
-public class SpeedZone : MonoBehaviour {
+public class PoopZone : MonoBehaviour {
 
     public float catSpeedModifier;
     public float mouseSpeedModifier;
     public float lifeTime;
     public float birthTime;
     public float deathTime;
-
+    
     private Vector3 _scale;
 
     void Start()
