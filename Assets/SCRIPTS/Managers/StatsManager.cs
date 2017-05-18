@@ -7,6 +7,15 @@ using Rewired;
 public class StatsManager : MonoBehaviour
 {
     public List<playerStats> playerList = new List<playerStats>();
+
+    [Header ("Score Values")]
+    public int mouseWinScore;
+    public int catWinScore;
+    public int saveScore;
+    public int captureScore;
+    public int stunScore;
+    public int freezeScore;
+
     public static StatsManager Instance;
 
     void Awake()
@@ -48,12 +57,12 @@ public class StatsManager : MonoBehaviour
 
 			playerList [mouseScript.controllerNumber].isCat = false;
 
-            mouseScript.OnSave += () => playerList[mouseScript.controllerNumber].saveCount++;
-            mouseScript.OnCapture += () => playerList[mouseScript.controllerNumber].captureCount++;
+            mouseScript.OnSave += () => { playerList[mouseScript.controllerNumber].saveCount++; playerList[mouseScript.controllerNumber].score += saveScore; };
+            mouseScript.OnCapture += () => { playerList[mouseScript.controllerNumber].captureCount++; playerList[mouseScript.controllerNumber].score += captureScore; };
             mouseScript.OnFrozen += () => playerList[mouseScript.controllerNumber].frozenCount++;
-            mouseScript.OnStun += () => playerList[mouseScript.controllerNumber].stunCount++;
+            mouseScript.OnStun += () => { playerList[mouseScript.controllerNumber].stunCount++; playerList[mouseScript.controllerNumber].score += stunScore; };
 
-            mouseScript.OnFrozen += () => playerList[catControllerNumber].freezeCount++;
+            mouseScript.OnFrozen += () => { playerList[catControllerNumber].freezeCount++; playerList[catControllerNumber].score += freezeScore; };
         }
     }
 }

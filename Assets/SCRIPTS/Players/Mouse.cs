@@ -53,6 +53,7 @@ public class Mouse : MonoBehaviour
 
 	[HideInInspector]
 	public Vector3 _movement;
+    public float speedBoost;
 
 	public event EventHandler OnAttack;
 	public event EventHandler OnFrozen;

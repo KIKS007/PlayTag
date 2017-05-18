@@ -55,7 +55,11 @@ public class Cat : MonoBehaviour
 	[Header("Dash Line Renderer")]
 	public LineRenderer dashLineRenderer;
 
-	private Rigidbody _rigidbody;
+
+    [HideInInspector]
+    public float speedBoost;
+
+    private Rigidbody _rigidbody;
 	private Vector3 _movement;
 	private float _dashSpeedTemp;
 	private Vector3 _previousMovement;
