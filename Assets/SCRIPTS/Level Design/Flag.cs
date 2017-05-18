@@ -8,13 +8,14 @@ public class Flag : Interrupter
     public float timeToCaptureSolo = 5.0f;
     public float multiplePlayerFactor = 0.3f;
     public int requiredPlayers = 1;
+    public Renderer loadingRenderer;
     
     private float _remainingTime;
     public List<Mouse> mouseList;
 
 	protected override void Start () {
         _remainingTime = timeToCaptureSolo;
-        _rend = GetComponent<Renderer>();
+        _rend = loadingRenderer;
 	}
 	
 
@@ -26,7 +27,7 @@ public class Flag : Interrupter
 		if(mouseList.Count > requiredPlayers - 1 && !active)
         {
             _remainingTime -= Time.deltaTime * (1 + (multiplePlayerFactor * (mouseList.Count - 1)));
-            _rend.material.color = new Color((1f - (_remainingTime / timeToCaptureSolo) / 2f), _rend.material.color.g, _rend.material.color.b);
+            _rend.material.SetFloat("_angle", _remainingTime / timeToCaptureSolo);
         }
 
         if(_remainingTime <= 0)

@@ -1,7 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/FXressource.meta
 guid: af14ab6fce9078c43a74bb0a233df6e1
 folderAsset: yes
 timeCreated: 1495114355
+=======
+guid: 11ff9b40716ba9e49aec35c8314c078a
+folderAsset: yes
+timeCreated: 1495132273
+>>>>>>> Tibo2:Assets/Meshes/platform/Materials.meta
 licenseType: Pro
 DefaultImporter:
   userData: 
