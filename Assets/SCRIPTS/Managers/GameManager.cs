@@ -62,6 +62,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
 	public event EventHandler OnVictory;
+	public event EventHandler OnMouseVictory;
+	public event EventHandler OnCatVictory;
 
     void Awake()
     {
@@ -303,6 +305,12 @@ public class GameManager : MonoBehaviour
 
         if (OnVictory != null)
 			OnVictory ();
+
+		if (OnMouseVictory != null && mouse)
+			OnMouseVictory ();
+
+		if (OnCatVictory != null && !mouse)
+			OnCatVictory ();
 
 		StartCoroutine (VictoryCoroutine (mouse));
     }

@@ -78,15 +78,20 @@ public class Mouse : MonoBehaviour
 	
 	void Update () 
 	{
+		if (GameManager.Instance.gameState != GameState.Victory && GameManager.Instance.gameState != GameState.Pause)
+		{
+			//Movement Vector
+			_movement = new Vector3(rewiredPlayer.GetAxisRaw("Move Horizontal"), 0f, rewiredPlayer.GetAxisRaw("Move Vertical"));
+			_movement.Normalize();
+
+			LookForward ();
+		}
+
 		if (GameManager.Instance.gameState != GameState.Playing)
 			return;
 
         if (mouseState == MouseState.Normal)
         {
-            //Movement Vector
-            _movement = new Vector3(rewiredPlayer.GetAxisRaw("Move Horizontal"), 0f, rewiredPlayer.GetAxisRaw("Move Vertical"));
-            _movement.Normalize();
-
             //Push
             if (rewiredPlayer.GetButtonDown("Action 2") && pushState == PushState.CanPush)
                 Push();
@@ -94,8 +99,6 @@ public class Mouse : MonoBehaviour
 			//Dash
 			if (rewiredPlayer.GetButtonDown("Action 1") && dashState == DashState.CanDash)
 				StartCoroutine(Dash());
-
-            LookForward();
         }
 	}
 

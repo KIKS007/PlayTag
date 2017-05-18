@@ -87,8 +87,6 @@ public class SoundsManager : Singleton<SoundsManager>
 			m.OnFrozen += () => PlaySoundFollow (mouseFreeze, m.transform);
 			m.OnUnfrozen += () => PlaySoundFollow (mouseUnfreeze, m.transform);
 		}
-
-
 	}
 
 	public void PlaySound (string sound)
