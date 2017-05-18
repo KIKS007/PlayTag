@@ -282,8 +282,11 @@ public class GameManager : MonoBehaviour
         foreach (Mouse mo in _mouses)
         {
             StatsManager.Instance.playerList[mo.controllerNumber].mouseDuration += timer - _timer;
-            if(mouse)
+            if (mouse)
+            {
                 StatsManager.Instance.playerList[mo.controllerNumber].win++;
+                StatsManager.Instance.playerList[mo.controllerNumber].score += StatsManager.Instance.mouseWinScore;
+            }
             else
                 StatsManager.Instance.playerList[mo.controllerNumber].lose++;
         }
@@ -293,9 +296,12 @@ public class GameManager : MonoBehaviour
         if(mouse)
             StatsManager.Instance.playerList[_cat.controllerNumber].lose++;
         else
+        { 
             StatsManager.Instance.playerList[_cat.controllerNumber].win++;
+            StatsManager.Instance.playerList[_cat.controllerNumber].score += StatsManager.Instance.catWinScore;
+        }
 
-		if(OnVictory != null)
+        if (OnVictory != null)
 			OnVictory ();
 
 		StartCoroutine (VictoryCoroutine (mouse));

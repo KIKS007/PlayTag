@@ -7,6 +7,7 @@ public class Flag : Interrupter
 
     public float timeToCaptureSolo = 5.0f;
     public float multiplePlayerFactor = 0.3f;
+    public int requiredPlayers = 1;
     
     private float _remainingTime;
     [HideInInspector]
@@ -23,7 +24,7 @@ public class Flag : Interrupter
 		if (active)
 			return;
 		
-		if(mouseList.Count > 0 && !active)
+		if(mouseList.Count > requiredPlayers - 1 && !active)
         {
             _remainingTime -= Time.deltaTime * (1 + (multiplePlayerFactor * (mouseList.Count - 1)));
             _rend.material.color = new Color((1f - (_remainingTime / timeToCaptureSolo) / 2f), _rend.material.color.g, _rend.material.color.b);
