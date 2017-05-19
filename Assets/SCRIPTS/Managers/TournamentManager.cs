@@ -36,6 +36,20 @@ public class TournamentManager : MonoBehaviour
 	{
 		_levelPool.AddRange (levelPool);
         _currentRound = 0;
+
+		MenuManager.Instance.OnMainMenu += MainMenu;
+		MainMenu ();
+	}
+
+	public void MainMenu ()
+	{
+		StartCoroutine (MainMenuCoroutine ());
+	}
+
+	IEnumerator MainMenuCoroutine ()
+	{
+		if (!SceneManager.GetSceneByName (levelPool [0]).isLoaded)
+			yield return SceneManager.LoadSceneAsync (levelPool [0], LoadSceneMode.Additive);
 	}
 	
 	void Update () {
@@ -96,7 +110,8 @@ public class TournamentManager : MonoBehaviour
         if (_currentScene != null)
             yield return SceneManager.UnloadSceneAsync(_currentScene);
 
-		yield return SceneManager.LoadSceneAsync (randScene, LoadSceneMode.Additive);
+		if (!SceneManager.GetSceneByName (randScene).isLoaded)
+			yield return SceneManager.LoadSceneAsync (randScene, LoadSceneMode.Additive);
 
         _currentScene = randScene;
 		_currentRound++;

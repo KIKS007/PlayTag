@@ -17,6 +17,7 @@ public class MenuManager : Singleton<MenuManager>
 	public float startDelay = 1f;
 
 	[Header ("Menus")]
+	public GameObject panel;
 	public EventSystem eventSystem;
 	public GameObject menuCanvas;
 	public GameObject timerCanvas;
@@ -47,6 +48,9 @@ public class MenuManager : Singleton<MenuManager>
 		//Dont forget to put keyboard on 1st player
 		_rewiredPlayer1 = ReInput.players.GetPlayer(0);
 		_rewiredSystem = ReInput.players.GetSystemPlayer ();
+
+		OnMainMenu += () => panel.SetActive (true);
+		TournamentManager.Instance.OnStartGame += () => panel.SetActive (false);
 
 		HideAll ();
 
