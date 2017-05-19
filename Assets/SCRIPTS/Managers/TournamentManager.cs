@@ -48,8 +48,8 @@ public class TournamentManager : MonoBehaviour
 
 	IEnumerator MainMenuCoroutine ()
 	{
-		if (!SceneManager.GetSceneByName (levelPool [0]).isLoaded)
-			yield return SceneManager.LoadSceneAsync (levelPool [0], LoadSceneMode.Additive);
+		if (!SceneManager.GetSceneByName (levelPool [1]).isLoaded)
+			yield return SceneManager.LoadSceneAsync (levelPool [1], LoadSceneMode.Additive);
 	}
 	
 	void Update () {
