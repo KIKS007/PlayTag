@@ -221,9 +221,13 @@ public class Mouse : MonoBehaviour
 				StartCoroutine(Dash());
 
         }
+        else
+        {
+            frozenTime += Time.deltaTime;
+        }
 
 
-		if(_previousMovement != _movement)
+        if (_previousMovement != _movement)
 
 		{
 
@@ -247,10 +251,6 @@ public class Mouse : MonoBehaviour
 
 			}
 
-		}
-		else
-		{
-			frozenTime += Time.deltaTime;
 		}
 
 
