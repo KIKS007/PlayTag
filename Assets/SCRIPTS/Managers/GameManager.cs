@@ -80,6 +80,8 @@ public class GameManager : MonoBehaviour
 
 	void Start ()
 	{
+
+
 		if (gameState == GameState.Playing)
 			Setup ();
     }
@@ -87,6 +89,8 @@ public class GameManager : MonoBehaviour
 	public void Setup ()
 	{
 		Time.timeScale = 1f;
+
+		timerText = GameObject.FindGameObjectWithTag ("Timer").GetComponent<Text> ();
 
 		_mouses.Clear ();
 
@@ -124,12 +128,15 @@ public class GameManager : MonoBehaviour
 			//Debug.Log ("Timer Victory");
 
 			Victory(false);
-			timerText.text = "0.00";
+			if(timerText != null)
+				timerText.text = "0.00";
 		}
 		else
 		{
 			_timer -= Time.deltaTime;
-			timerText.text = _timer.ToString("F2");
+
+			if(timerText != null)
+				timerText.text = _timer.ToString("F2");
 
 			if(_timer < 6f)
 			{

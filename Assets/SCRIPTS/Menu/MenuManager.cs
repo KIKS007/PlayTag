@@ -96,7 +96,7 @@ public class MenuManager : Singleton<MenuManager>
 	{
 		if(GameManager.Instance.gameState == GameState.Playing)
 		{
-			timerCanvas.gameObject.SetActive (false);
+			//timerCanvas.gameObject.SetActive (false);
 			SoundsManager.Instance.PlaySound (SoundsManager.Instance.buttonSubmit);
 			//Pause
 			GameManager.Instance.gameState = GameState.Pause;
@@ -115,7 +115,7 @@ public class MenuManager : Singleton<MenuManager>
 		
 		else if(GameManager.Instance.gameState == GameState.Pause)
 		{
-			timerCanvas.gameObject.SetActive (true);
+			//timerCanvas.gameObject.SetActive (true);
 			SoundsManager.Instance.PlaySound (SoundsManager.Instance.buttonCancel);
 			//Unpause
 			pauseMenu.GetComponent<RectTransform> ().DOAnchorPos (offScreenPosition, menuAnimationDuration).SetEase (menuEase).OnComplete (()=> 
@@ -136,7 +136,7 @@ public class MenuManager : Singleton<MenuManager>
 
 		DOVirtual.DelayedCall (menuAnimationDuration, ()=> 
 			{
-				timerCanvas.gameObject.SetActive (true);
+				//timerCanvas.gameObject.SetActive (true);
 				TournamentManager.Instance.StartGame ();
 			}).SetUpdate (true);
 	}
@@ -168,7 +168,7 @@ public class MenuManager : Singleton<MenuManager>
 
 		Time.timeScale = 1;
 		GameManager.Instance.gameState = GameState.Menu;
-		timerCanvas.gameObject.SetActive (false);
+		//timerCanvas.gameObject.SetActive (false);
 
 		ShowMenu (mainMenu);
 	}
