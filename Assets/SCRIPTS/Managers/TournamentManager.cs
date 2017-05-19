@@ -110,6 +110,12 @@ public class TournamentManager : MonoBehaviour
         if (_currentScene != null)
             yield return SceneManager.UnloadSceneAsync(_currentScene);
 
+		for(int i = 1; i < SceneManager.sceneCountInBuildSettings; i++)
+		{
+			if(SceneManager.GetSceneByBuildIndex (i).isLoaded && SceneManager.GetSceneByBuildIndex (i).name != "Menu BACKUP")
+				yield return SceneManager.UnloadSceneAsync (SceneManager.GetSceneByBuildIndex (i).name);
+		}
+
 		if (!SceneManager.GetSceneByName (randScene).isLoaded)
 			yield return SceneManager.LoadSceneAsync (randScene, LoadSceneMode.Additive);
 
