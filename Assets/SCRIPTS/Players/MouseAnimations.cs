@@ -5,6 +5,7 @@ using UnityEngine;
 public class MouseAnimations : MonoBehaviour 
 {
 	public GameObject[] mousesMeshes;
+	public ParticleSystem dashFX;
 
 	private Mouse _mouseScript;
 	private Animator _mouseAnimator;
@@ -27,7 +28,7 @@ public class MouseAnimations : MonoBehaviour
 		}
 
 		_mouseAnimator = transform.GetComponentInChildren <Animator> ();
-		_attackFX = transform.GetComponentInChildren <ParticleSystem> ();
+		_attackFX = _mouseAnimator.transform.GetComponentInChildren <ParticleSystem> ();
 
 		_mouseScript.OnAttack += () =>
 		{ 
@@ -40,6 +41,9 @@ public class MouseAnimations : MonoBehaviour
 		_mouseScript.OnFrozen += () => _mouseAnimator.SetTrigger ("freeze");
 		_mouseScript.OnUnfrozen += () => _mouseAnimator.SetTrigger ("iddle");
 		_mouseScript.OnDash += () => _mouseAnimator.SetTrigger ("dash");
+
+		_mouseScript.OnDash += () => dashFX.Play ();
+
 		_mouseScript.OnDashEnd += () => _mouseAnimator.SetTrigger ("iddle");
 
 		_mouseScript.OnMoving += () => _mouseAnimator.SetBool ("walking", true);

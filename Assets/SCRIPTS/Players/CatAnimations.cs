@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CatAnimations : MonoBehaviour 
 {
+	public ParticleSystem stunFX;
 	private Cat _catScript;
 	private Animator _catAnimator;
 
@@ -18,6 +19,9 @@ public class CatAnimations : MonoBehaviour
 		_catScript.OnDashEnd += () => _catAnimator.SetTrigger ("dashEnd");
 		_catScript.OnStopMoving += () => _catAnimator.SetTrigger ("dashEnd");
 		_catScript.OnStunned += () => _catAnimator.SetTrigger ("dashEnd");
+		_catScript.OnStunned += () => _catAnimator.SetBool ("walking", false);
+
+		_catScript.OnStunned += () => stunFX.Play ();
 
 		_catScript.OnMoving += () => _catAnimator.SetBool ("walking", true);
 		_catScript.OnStopMoving += () => _catAnimator.SetBool ("walking", false);

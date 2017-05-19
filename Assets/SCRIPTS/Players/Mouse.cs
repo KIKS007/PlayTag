@@ -221,12 +221,11 @@ public class Mouse : MonoBehaviour
         }
 
 
-
 		if(_previousMovement != _movement)
 
 		{
 
-			if(_previousMovement == Vector3.zero && _movement != Vector3.zero && mouseState != MouseState.Frozen)
+			if(_movement != Vector3.zero && mouseState != MouseState.Frozen)
 
 			{
 
@@ -236,7 +235,7 @@ public class Mouse : MonoBehaviour
 
 			}
 
-			if(_previousMovement != Vector3.zero && _movement == Vector3.zero || mouseState == MouseState.Frozen && _previousMouseState != MouseState.Frozen)
+			if(_movement == Vector3.zero || mouseState == MouseState.Frozen && _previousMouseState != MouseState.Frozen)
 
 			{
 
@@ -606,7 +605,6 @@ public class Mouse : MonoBehaviour
 				if (OnUnfrozen != null)
 
 					OnUnfrozen ();
-
 
 
                 mouseState = MouseState.Normal;
