@@ -138,6 +138,8 @@ public class Mouse : MonoBehaviour
 
 	public event EventHandler OnDash;
 
+	public event EventHandler OnCanDash;
+
     public event EventHandler OnDashEnd;
 
 	public event EventHandler OnMoving;
@@ -420,6 +422,10 @@ public class Mouse : MonoBehaviour
 
 		yield return new WaitForSeconds (dashCooldown);
 
+
+		if (OnCanDash != null)
+
+			OnCanDash ();
 
 
 		dashState = DashState.CanDash;
