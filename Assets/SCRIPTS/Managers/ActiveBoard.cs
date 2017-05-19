@@ -3,32 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class ActiveBoard : MonoBehaviour {
+public class ActiveBoard : MonoBehaviour 
+{
 
     public List<string> TitleList = new List<string>();
     public List<string> StatsList = new List<string>();
 
-    private List<playerStats> _playerList = new List<playerStats>();
-    private List<Leaderboard> _leaderboardList = new List<Leaderboard>();
+	public List<playerStats> _playerList = new List<playerStats>();
+	public List<Leaderboard> _leaderboardList = new List<Leaderboard>();
 
-	void OnEnable () {
+	void OnEnable () 
+	{
         for(int i = 0; i < GameManager.Instance.playersCount; i++)
         {
             transform.GetChild(i).gameObject.SetActive(true);
             _leaderboardList.Add(transform.GetChild(i).GetComponent<Leaderboard>());
         }
+
         StartCoroutine(delayedHF());
 	}
 
     IEnumerator delayedHF()
     {
-        yield return new WaitForSeconds(1f);
+		yield return new WaitForSecondsRealtime (1f);
         _playerList.AddRange(StatsManager.Instance.playerList);
         HF();
     }
 
     public void HF()
     {
+		Debug.Log ("Bite");
+
         _playerList.OrderBy(x => x.frozenDuration).ToList();
         if(_playerList[0].frozenDuration != 0f)
             _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[0] + "\n" + StatsList[0] + " - " + (int)(_playerList[0].frozenDuration / 60f) + ":" + ((int)(_playerList[0].frozenDuration % 60)).ToString("00"));
