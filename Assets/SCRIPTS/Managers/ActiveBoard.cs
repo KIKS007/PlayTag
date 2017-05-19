@@ -32,7 +32,11 @@ public class ActiveBoard : MonoBehaviour
 
     public void HF()
     {
-		Debug.Log ("Bite");
+        _playerList = _playerList.OrderBy(x => x.score).ToList();
+        for(int i =0; i < _playerList.Count; i++)
+        {
+            _leaderboardList[_playerList[0].controllerNumber]._rank = i;
+        }
 
         _playerList = _playerList.OrderBy(x => x.frozenDuration).ToList();
         if(_playerList[0].frozenDuration != 0f)
