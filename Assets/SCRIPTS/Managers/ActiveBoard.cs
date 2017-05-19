@@ -34,41 +34,41 @@ public class ActiveBoard : MonoBehaviour
     {
 		Debug.Log ("Bite");
 
-        _playerList.OrderBy(x => x.frozenDuration).ToList();
+        _playerList = _playerList.OrderBy(x => x.frozenDuration).ToList();
         if(_playerList[0].frozenDuration != 0f)
-            _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[0] + "\n" + StatsList[0] + " - " + (int)(_playerList[0].frozenDuration / 60f) + ":" + ((int)(_playerList[0].frozenDuration % 60)).ToString("00"));
+            _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[0] + "\n" + StatsList[0] + "  " + (int)(_playerList[0].frozenDuration / 60f) + ":" + ((int)(_playerList[0].frozenDuration % 60)).ToString("00"));
 
-        _playerList.OrderBy(x => x.catDuration).ToList();
-            _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[1] + "\n" + StatsList[1] + " - " + (int)(_playerList[0].catDuration / 60f) + ":" + ((int)(_playerList[0].catDuration % 60)).ToString("00"));
+        _playerList = _playerList.OrderBy(x => x.catDuration).ToList();
+            _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[1] + "\n" + StatsList[1] + "  " + (int)(_playerList[0].catDuration / 60f) + ":" + ((int)(_playerList[0].catDuration % 60)).ToString("00"));
 
-        _playerList.OrderBy(x => x.unfrozenDuration).ToList();
-        _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[2] + "\n" + StatsList[2] + " - " + ((int)(_playerList[0].unfrozenDuration / (_playerList[0].mouseDuration) * 100f)).ToString("00") + "%");
+        _playerList = _playerList.OrderBy(x => x.unfrozenDuration).ToList();
+        _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[2] + "\n" + StatsList[2] + "  " + ((int)(_playerList[0].unfrozenDuration / (_playerList[0].mouseDuration) * 100f)).ToString("00") + "%");
 
-        _playerList.OrderBy(x => x.freezeCount).ToList();
+        _playerList = _playerList.OrderBy(x => x.freezeCount).ToList();
         if (_playerList[0].freezeCount != 0f)
-            _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[3] + "\n" + StatsList[3] + " - " + _playerList[0].freezeCount);
+            _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[3] + "\n" + StatsList[3] + "  " + _playerList[0].freezeCount);
 
-        _playerList.OrderBy(x => x.frozenCount).ToList();
+        _playerList = _playerList.OrderBy(x => x.frozenCount).ToList();
         if (_playerList[0].frozenCount != 0f)
-            _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[4] + "\n" + StatsList[4] + " - " + _playerList[0].frozenCount);
+            _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[4] + "\n" + StatsList[4] + "  " + _playerList[0].frozenCount);
 
-        _playerList.OrderBy(x => x.saveCount).ToList();
+        _playerList = _playerList.OrderBy(x => x.saveCount).ToList();
         if (_playerList[0].saveCount != 0f)
-            _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[5] + "\n" + StatsList[5] + " - " + _playerList[0].saveCount);
+            _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[5] + "\n" + StatsList[5] + "  " + _playerList[0].saveCount);
 
-        _playerList.OrderBy(x => x.captureCount).ToList();
+        _playerList = _playerList.OrderBy(x => x.captureCount).ToList();
         if (_playerList[0].captureCount != 0f)
-            _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[6] + "\n" + StatsList[6] + " - " + _playerList[0].captureCount);
+            _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[6] + "\n" + StatsList[6] + "  " + _playerList[0].captureCount);
 
-        _playerList.OrderBy(x => x.win).ToList();
-        _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[7] + "\n" + StatsList[7] + " - " + _playerList[0].win);
+        _playerList = _playerList.OrderBy(x => x.win).ToList();
+        _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[7] + "\n" + StatsList[7] + "  " + _playerList[0].win);
 
         _playerList.OrderBy(x => x.lose).ToList();
-        _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[8] + "\n" + StatsList[8] + " - " + _playerList[0].lose);
+        _leaderboardList[_playerList[0].controllerNumber].FeedHF(TitleList[8] + "\n" + StatsList[8] + "  " + _playerList[0].lose);
 
-        _playerList.OrderBy(x => x.stunCount).ToList();
+        _playerList = _playerList.OrderBy(x => x.stunCount).ToList();
         if (_playerList[0].stunCount != 0f)
-            _leaderboardList[_playerList[0].stunCount].FeedHF(TitleList[9] + "\n" + StatsList[9] + " - " + _playerList[0].stunCount);
+            _leaderboardList[_playerList[0].stunCount].FeedHF(TitleList[9] + "\n" + StatsList[9] + "  " + _playerList[0].stunCount);
     }
 
 
